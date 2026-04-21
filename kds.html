@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REST-AI | Kitchen Display System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --card-bg: #111111;
+            --accent-new: #F59E0B;
+            --accent-progress: #22C55E;
+            --accent-urgent: #EF4444;
+            --text-main: #FFFFFF;
+            --text-dim: #888888;
+            --font-main: 'Outfit', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Bar */
+        header {
+            height: 70px;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #222;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent-progress), #0ea5e9);
+            border-radius: 6px;
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .brand h1 {
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .live-clock {
+            font-family: var(--font-mono);
+            font-size: 1.5rem;
+            color: var(--accent-progress);
+            text-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: right;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            display: block;
+        }
+
+        .stat-value {
+            font-family: var(--font-mono);
+            font-size: 1.1rem;
+        }
+
+        /* Filter Tabs */
+        .filter-bar {
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            background: #111;
+            padding: 4px;
+            border-radius: 8px;
+            gap: 4px;
+        }
+
+        .tab {
+            padding: 8px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dim);
+            transition: var(--transition);
+            border: none;
+            background: transparent;
+        }
+
+        .tab.active {
+            background: #222;
+            color: var(--text-main);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .btn-new-order {
+            margin-left: auto;
+            background: #222;
+            color: var(--text-main);
+            border: 1px solid #333;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-new-order:hover {
+            background: #333;
+            border-color: var(--accent-progress);
+        }
+
+        /* Order Grid */
+        .grid-container {
+            flex: 1;
+            padding: 0 30px 30px;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            align-content: start;
+        }
+
+        .grid-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .grid-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .grid-container::-webkit-scrollbar-thumb {
+            background: #222;
+            border-radius: 10px;
+        }
+
+        /* Order Card */
+        .order-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-new);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            animation: slideIn 0.5s cubic-bezier(0.23, 1, 0.32, 1) both;
+            will-change: transform, opacity;
+            height: fit-content;
+            overflow: hidden;
+        }
+
+        .order-card.status-progress { border-left-color: var(--accent-progress); }
+        .order-card.status-urgent { border-left-color: var(--accent-urgent); }
+        .order-card.urgent-blink { animation: blinkUrgent 1s infinite alternate; }
+
+        @keyframes slideIn {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            to { transform: translateX(50px); opacity: 0; }
+        }
+
+        @keyframes blinkUrgent {
+            from { box-shadow: 0 0 0px rgba(239, 68, 68, 0); }
+            to { box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); border-color: rgba(239, 68, 68, 1); }
+        }
+
+        .card-header {
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .ticket-num {
+            font-family: var(--font-mono);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #eee;
+        }
+
+        .table-badge {
+            background: #222;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-dim);
+            letter-spacing: 0.5px;
+        }
+
+        .card-meta {
+            padding: 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            background: rgba(255,255,255,0.02);
+        }
+
+        .timer {
+            font-family: var(--font-mono);
+            font-weight: 700;
+            color: var(--accent-new);
+        }
+
+        .timer.urgent { color: var(--accent-urgent); }
+
+        .items-list {
+            padding: 16px;
+            flex: 1;
+        }
+
+        .item-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            align-items: flex-start;
+        }
+
+        .qty {
+            width: 24px;
+            height: 24px;
+            background: #222;
+            border-radius: 4px;
+            display: grid;
+            place-items: center;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+            flex-shrink: 0;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-size: 1rem;
+            font-weight: 500;
+            line-height: 1.2;
+        }
+
+        .item-note {
+            font-size: 0.8rem;
+            color: #666;
+            font-style: italic;
+            margin-top: 2px;
+        }
+
+        .special-instruction {
+            margin-top: 8px;
+            padding: 10px;
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: var(--accent-new);
+            border-left: 2px solid var(--accent-new);
+        }
+
+        .card-actions {
+            padding: 16px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            border-top: 1px solid #1a1a1a;
+        }
+
+        .btn-action {
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 1px;
+        }
+
+        .btn-start { background: var(--accent-new); color: #000; }
+        .btn-start:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+        .btn-done { background: var(--accent-progress); color: #000; }
+        .btn-done:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .live-clock { font-size: 1.1rem; }
+            .brand h1 { font-size: 1rem; }
+            .grid-container { grid-template-columns: 1fr; }
+            header { padding: 0 15px; }
+            .filter-bar { padding: 15px; flex-direction: column; align-items: flex-start; gap: 15px; }
+            .btn-new-order { margin-left: 0; width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <div class="brand-logo">R</div>
+            <h1>REST-AI KDS</h1>
+        </div>
+        <div class="live-clock" id="clock">00:00:00</div>
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-label">Active</span>
+                <span class="stat-value" id="active-count">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Completed</span>
+                <span class="stat-value" id="total-today">142</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="filter-bar">
+        <div class="tabs">
+            <button class="tab active" onclick="filterOrders('ALL')">ALL</button>
+            <button class="tab" onclick="filterOrders('NEW')">NEW</button>
+            <button class="tab" onclick="filterOrders('IN_PROGRESS')">IN PROGRESS</button>
+            <button class="tab" onclick="filterOrders('READY')">READY</button>
+        </div>
+        <button class="btn-new-order" onclick="simulateNewOrder()">
+            <span>+</span> SIMULATE ORDER
+        </button>
+    </div>
+
+    <div class="grid-container" id="order-grid">
+        <!-- Orders will be injected here -->
+    </div>
+
+    <script>
+        let orders = [];
+        let currentFilter = 'ALL';
+        let completedToday = 142;
+
+        const SriLankanItems = [
+            { name: "Chicken Rice & Curry", time: 12 },
+            { name: "Egg Kottu", time: 8 },
+            { name: "Seafood Fried Rice", time: 15 },
+            { name: "Mutton Rolls (2pcs)", time: 5 },
+            { name: "String Hopper Set", time: 10 },
+            { name: "Beef Kottu (Large)", time: 12 },
+            { name: "Watalappam Cup", time: 0 },
+            { name: "Pol Sambol & Roast Paan", time: 6 }
+        ];
+
+        const notes = ["No onions", "Extra spicy", "Less salt", "Separate gravy", "Make it crispy"];
+
+        // Audio System
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playChime() {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.5);
+            
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.5);
+        }
+
+        // Timer Update
+        setInterval(() => {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-GB');
+            updateOrderTimers();
+        }, 1000);
+
+        function updateOrderTimers() {
+            const now = Date.now();
+            orders.forEach(order => {
+                const elapsedSec = Math.floor((now - order.timestamp) / 1000);
+                const mins = Math.floor(elapsedSec / 60);
+                const secs = elapsedSec % 60;
+                
+                const timerEl = document.querySelector(`[data-id="${order.id}"] .timer`);
+                if (timerEl) {
+                    timerEl.innerText = `${mins}:${secs.toString().padStart(2, '0')}m`;
+                    
+                    if (mins >= 15) {
+                        timerEl.classList.add('urgent');
+                        document.querySelector(`[data-id="${order.id}"]`).classList.add('status-urgent', 'urgent-blink');
+                    } else if (mins >= 10) {
+                        timerEl.classList.add('urgent');
+                    }
+                }
+            });
+        }
+
+        function createOrder(id, items, table, isDelivery = false, timestamp = Date.now()) {
+            return {
+                id,
+                items,
+                table,
+                isDelivery,
+                status: 'NEW',
+                timestamp: timestamp
+            };
+        }
+
+        function renderOrders() {
+            const container = document.getElementById('order-grid');
+            const activeCountEl = document.getElementById('active-count');
+            
+            const filtered = orders.filter(o => currentFilter === 'ALL' || o.status === currentFilter);
+            activeCountEl.innerText = orders.length;
+
+            container.innerHTML = '';
+            filtered.forEach((order, index) => {
+                const card = document.createElement('div');
+                card.className = `order-card status-${order.status.toLowerCase().replace('_', '-')}`;
+                card.setAttribute('data-id', order.id);
+                card.style.animationDelay = `${index * 0.1}s`;
+
+                const elapsedSec = Math.floor((Date.now() - order.timestamp) / 1000);
+                const mins = Math.floor(elapsedSec / 60);
+                const secs = elapsedSec % 60;
+
+                let itemsHtml = order.items.map(item => `
+                    <div class="item-row">
+                        <div class="qty">${item.qty}</div>
+                        <div class="item-details">
+                            <div class="item-name">${item.name}</div>
+                            ${item.note ? `<div class="item-note">${item.note}</div>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span class="ticket-num">#${order.id.toString().padStart(4, '0')}</span>
+                        <span class="table-badge">${order.isDelivery ? 'DELIVERY' : 'TABLE ' + order.table}</span>
+                    </div>
+                    <div class="card-meta">
+                        <span>${new Date(order.timestamp).toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'})}</span>
+                        <span class="timer">${mins}:${secs.toString().padStart(2, '0')}m</span>
+                    </div>
+                    <div class="items-list">
+                        ${itemsHtml}
+                        ${order.special ? `<div class="special-instruction">${order.special}</div>` : ''}
+                    </div>
+                    <div class="card-actions">
+                        ${order.status === 'NEW' ? 
+                            `<button class="btn-action btn-start" onclick="updateStatus('${order.id}', 'IN_PROGRESS')">START COOKING</button>` : 
+                            `<button class="btn-action btn-done" onclick="completeOrder('${order.id}')">MARK AS READY</button>`
+                        }
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function updateStatus(id, newStatus) {
+            const order = orders.find(o => o.id === id);
+            if (order) {
+                order.status = newStatus;
+                renderOrders();
+            }
+        }
+
+        function completeOrder(id) {
+            const card = document.querySelector(`[data-id="${id}"]`);
+            card.style.animation = "slideOut 0.4s forwards cubic-bezier(0.4, 0, 1, 1)";
+            
+            setTimeout(() => {
+                orders = orders.filter(o => o.id !== id);
+                completedToday++;
+                document.getElementById('total-today').innerText = completedToday;
+                renderOrders();
+            }, 400);
+        }
+
+        function filterOrders(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.tab').forEach(t => {
+                t.classList.toggle('active', t.innerText.replace(' ', '_') === filter || (filter === 'ALL' && t.innerText === 'ALL'));
+            });
+            renderOrders();
+        }
+
+        function simulateNewOrder() {
+            const id = Math.floor(1000 + Math.random() * 9000);
+            const numItems = Math.floor(Math.random() * 3) + 1;
+            const items = [];
+            for(let i=0; i<numItems; i++) {
+                const template = SriLankanItems[Math.floor(Math.random() * SriLankanItems.length)];
+                items.push({
+                    qty: Math.floor(Math.random() * 3) + 1,
+                    name: template.name,
+                    note: Math.random() > 0.7 ? notes[Math.floor(Math.random() * notes.length)] : null
+                });
+            }
+            
+            const newOrder = createOrder(
+                id, 
+                items, 
+                Math.floor(Math.random() * 20) + 1, 
+                Math.random() > 0.8
+            );
+            
+            if (Math.random() > 0.8) {
+                newOrder.special = "Customer is allergic to shellfish. Be careful!";
+            }
+
+            orders.unshift(newOrder); // Add to front
+            playChime();
+            renderOrders();
+        }
+
+        // Initial Data
+        window.onload = () => {
+            // Mock Order 1: Normal
+            orders.push(createOrder(47, [
+                {qty: 2, name: "Chicken Rice & Curry", note: "Extra gravy"},
+                {qty: 1, name: "Watalappam Cup"}
+            ], 5, false, Date.now() - (4 * 60 * 1000)));
+
+            // Mock Order 2: Urgent
+            orders.push(createOrder(48, [
+                {qty: 3, name: "Egg Kottu", note: "Very spicy"}
+            ], 12, false, Date.now() - (16 * 60 * 1000)));
+
+            // Mock Order 3: Delivery with Special Note
+            const delivery = createOrder(49, [
+                {qty: 1, name: "Seafood Fried Rice"},
+                {qty: 4, name: "Mutton Rolls (2pcs)"}
+            ], 0, true, Date.now() - (2 * 60 * 1000));
+            delivery.special = "PACK SEPARATELY PLEASE";
+            orders.push(delivery);
+
+            // Mock Order 4: In Progress
+            const progress = createOrder(50, [
+                {qty: 10, name: "String Hopper Set"}
+            ], 8, false, Date.now() - (8 * 60 * 1000));
+            progress.status = 'IN_PROGRESS';
+            orders.push(progress);
+
+            renderOrders();
+        };
+    </script>
+</body>
+</html>

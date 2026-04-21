@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MenuBot | Live Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Sora:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #09090b;
+            --wa-green: #25D366;
+            --wa-header: #075E54;
+            --kds-amber: #F59E0B;
+            --text-main: #FFFFFF;
+            --font-head: 'Space Grotesk', sans-serif;
+            --font-body: 'Sora', sans-serif;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Top Header */
+        header {
+            padding: 30px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(255,255,255,0.05), transparent);
+        }
+
+        header h1 { font-family: var(--font-head); font-size: 2.5rem; margin-bottom: 8px; }
+        header p { color: rgba(255,255,255,0.6); }
+
+        /* Main Split View */
+        .split-view {
+            flex: 1;
+            display: flex;
+            gap: 40px;
+            padding: 0 40px 40px;
+            position: relative;
+        }
+
+        /* Phone Panel */
+        .phone-panel {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .phone-mockup {
+            width: 320px;
+            height: 640px;
+            background: #000;
+            border-radius: 40px;
+            border: 8px solid #1a1a1a;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.8);
+        }
+
+        .wa-header {
+            background: var(--wa-header);
+            padding: 40px 16px 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            background: #ddd;
+            border-radius: 50%;
+            display: grid; place-items: center; color: #555; font-weight: 700;
+        }
+
+        .wa-chat-area {
+            flex: 1;
+            background: #0b141a;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .bubble {
+            max-width: 80%;
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            position: relative;
+            animation: bubbleIn 0.3s ease-out forwards;
+        }
+
+        @keyframes bubbleIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .bubble-bot {
+            background: #202c33;
+            color: #e9edef;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .bubble-user {
+            background: #005c4b;
+            color: #e9edef;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .wa-input-area {
+            background: #202c33;
+            padding: 10px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .wa-input {
+            flex: 1;
+            background: #2a3942;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px;
+            color: #fff;
+            outline: none;
+        }
+
+        .wa-send {
+            width: 40px;
+            height: 40px;
+            background: var(--wa-green);
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+        }
+
+        /* Kitchen Panel */
+        .kds-panel {
+            flex: 1.5;
+            background: #050505;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .kds-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;
+        }
+
+        .kds-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .empty-state {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            opacity: 0.3;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.2; }
+            50% { opacity: 0.5; }
+            100% { opacity: 0.2; }
+        }
+
+        .kds-card {
+            background: #111;
+            border-left: 4px solid var(--kds-amber);
+            padding: 20px;
+            border-radius: 12px;
+            animation: cardIn 0.5s cubic-bezier(0.23, 1, 0.32, 1) both;
+        }
+
+        @keyframes cardIn {
+            from { transform: translateX(50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .kds-btn {
+            width: 100%;
+            padding: 10px;
+            background: var(--kds-amber);
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            margin-top: 16px;
+            cursor: pointer;
+        }
+
+        /* Divider & Connection */
+        .divider {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 2px; height: 100px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .packet {
+            position: absolute;
+            width: 10px; height: 10px;
+            background: var(--wa-green);
+            border-radius: 50%;
+            filter: blur(2px);
+            z-index: 10;
+        }
+
+        /* Success Modal */
+        #success-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            display: none;
+            place-items: center;
+            text-align: center;
+        }
+
+        .modal-content {
+            padding: 40px;
+            background: #111;
+            border-radius: 32px;
+            border: 1px solid var(--wa-green);
+        }
+
+        .btn-cta {
+            background: var(--wa-green);
+            color: #000;
+            padding: 16px 32px;
+            border-radius: 100px;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-block;
+            margin-top: 24px;
+        }
+
+        /* Mobile */
+        @media (max-width: 1024px) {
+            .split-view { flex-direction: column; overflow-y: auto; height: auto; }
+            .phone-panel, .kds-panel { flex: none; width: 100%; }
+            .phone-mockup { height: 500px; }
+            body { overflow-y: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Try it Yourself.</h1>
+        <p>Order something on the left, watch it appear in the kitchen on the right.</p>
+    </header>
+
+    <div class="split-view">
+        <div class="phone-panel">
+            <div class="phone-mockup">
+                <div class="wa-header">
+                    <div class="avatar">M</div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 0.95rem;">Elite Cuisines AI</div>
+                        <div style="font-size: 0.75rem; opacity: 0.8;">Bot • Online</div>
+                    </div>
+                </div>
+                <div class="wa-chat-area" id="chat-area">
+                    <div class="bubble bubble-bot">Hello! 👋 Welcome to Elite Cuisines. What can I get for you today? Reply <b>MENU</b> to see our dishes.</div>
+                </div>
+                <form class="wa-input-area" id="chat-form" onsubmit="handleSend(event)">
+                    <input type="text" class="wa-input" id="user-input" placeholder="Type a message..." autocomplete="off">
+                    <button type="submit" class="wa-send">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="kds-panel" id="kds-panel">
+            <div class="kds-header">
+                <h2 style="font-family: var(--font-head); font-size: 1.2rem; color: var(--kds-amber)">KITCHEN DISPLAY SCREEN</h2>
+                <span id="kds-status" style="font-size: 0.8rem; opacity: 0.6;">● CONNECTED</span>
+            </div>
+            <div class="empty-state" id="empty-state">
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <p style="margin-top: 10px;">Waiting for orders...</p>
+            </div>
+            <div class="kds-grid" id="kds-grid"></div>
+        </div>
+    </div>
+
+    <div id="success-modal">
+        <div class="modal-content">
+            <h1 style="color: var(--wa-green); margin-bottom: 16px;">Order Completed! 🎯</h1>
+            <p>That's it. Your customer orders via WhatsApp, your kitchen gets it instantly.</p>
+            <p style="margin-top: 8px; opacity: 0.6;">No more missed calls. No more manual typing.</p>
+            <a href="#" class="btn-cta">Set this up for my restaurant</a>
+        </div>
+    </div>
+
+    <script>
+        const chatArea = document.getElementById('chat-area');
+        const kdsGrid = document.getElementById('kds-grid');
+        const emptyState = document.getElementById('empty-state');
+        let currentOrder = null;
+
+        const menuItems = [
+            { name: "Chicken Kottu", price: 850 },
+            { name: "Seafood Fried Rice", price: 1250 },
+            { name: "Lamprais", price: 950 },
+            { name: "Mutton Rolls", price: 400 },
+            { name: "Iced Latte", price: 550 }
+        ];
+
+        function addBubble(text, type) {
+            const b = document.createElement('div');
+            b.className = `bubble bubble-${type}`;
+            b.innerHTML = text;
+            chatArea.appendChild(b);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        function showTyping() {
+            const b = document.createElement('div');
+            b.className = 'bubble bubble-bot typing';
+            b.id = 'typing-indicator';
+            b.innerText = '...';
+            chatArea.appendChild(b);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        function removeTyping() {
+            const el = document.getElementById('typing-indicator');
+            if(el) el.remove();
+        }
+
+        function handleSend(e) {
+            e.preventDefault();
+            const input = document.getElementById('user-input');
+            const msg = input.value.trim();
+            if(!msg) return;
+
+            addBubble(msg, 'user');
+            input.value = '';
+
+            setTimeout(() => {
+                processAI(msg);
+            }, 800);
+        }
+
+        function processAI(msg) {
+            showTyping();
+            const lower = msg.toLowerCase();
+            
+            setTimeout(() => {
+                removeTyping();
+                
+                if(lower.includes('menu')) {
+                    let m = "<b>OUR MENU:</b><br>";
+                    menuItems.forEach(i => m += `• ${i.name} - Rs. ${i.price}<br>`);
+                    m += "<br>Tell me what you'd like to order!";
+                    addBubble(m, 'bot');
+                } 
+                else if(menuItems.some(i => lower.includes(i.name.toLowerCase()))) {
+                    const item = menuItems.find(i => lower.includes(i.name.toLowerCase()));
+                    currentOrder = { item: item.name, price: item.price };
+                    addBubble(`Great choice! <b>${item.name}</b> (Rs. ${item.price}). Which table are you at?`, 'bot');
+                }
+                else if(!isNaN(msg) && currentOrder) {
+                    currentOrder.table = msg;
+                    addBubble(`Perfect, Table ${msg}. Ready to confirm your order? Reply <b>CONFIRM</b>.`, 'bot');
+                }
+                else if(lower.includes('confirm') || lower.includes('yes')) {
+                    if(currentOrder && currentOrder.table) {
+                        addBubble("Order confirmed! 🚀 Your food is being prepared. It will be at your table soon.", 'bot');
+                        sendToKitchen(currentOrder);
+                    } else {
+                        addBubble("Please tell me what you'd like to order first!", 'bot');
+                    }
+                }
+                else {
+                    addBubble("Sorry, I didn't quite get that. Reply <b>MENU</b> to see our dishes or tell me what you'd like!", 'bot');
+                }
+            }, 1200);
+        }
+
+        function sendToKitchen(order) {
+            // Animate packet
+            const packet = document.createElement('div');
+            packet.className = 'packet';
+            const split = document.querySelector('.split-view');
+            packet.style.left = '200px';
+            packet.style.top = '400px';
+            document.body.appendChild(packet);
+
+            packet.animate([
+                { left: '200px', opacity: 1 },
+                { left: '600px', opacity: 1 },
+                { left: '800px', opacity: 0 }
+            ], { duration: 800, easing: 'ease-in-out' }).onfinish = () => {
+                packet.remove();
+                addKdsCard(order);
+            };
+        }
+
+        function addKdsCard(order) {
+            emptyState.style.display = 'none';
+            const id = Math.floor(1000 + Math.random() * 9000);
+            const card = document.createElement('div');
+            card.className = 'kds-card';
+            card.innerHTML = `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                    <span style="font-weight: 700;">#${id}</span>
+                    <span style="font-size: 0.8rem; color: var(--kds-amber)">TABLE ${order.table}</span>
+                </div>
+                <div style="font-size: 1.1rem; font-weight: 600;">1x ${order.item}</div>
+                <button class="kds-btn" onclick="completeKds(this)">MARK AS READY</button>
+            `;
+            kdsGrid.appendChild(card);
+        }
+
+        function completeKds(btn) {
+            const card = btn.parentElement;
+            card.animate([
+                { transform: 'scale(1)', opacity: 1 },
+                { transform: 'scale(0.8)', opacity: 0 }
+            ], { duration: 300 }).onfinish = () => {
+                card.remove();
+                if(kdsGrid.children.length === 0) {
+                    emptyState.style.display = 'block';
+                    document.getElementById('success-modal').style.display = 'grid';
+                }
+            };
+        }
+    </script>
+</body>
+</html>
