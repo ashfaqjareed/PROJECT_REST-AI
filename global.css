@@ -84,3 +84,109 @@ footer { background: #050505; border-top: 1px solid var(--border); padding: 80px
 
 /* Containers */
 .page-container { padding: 180px 8% 100px; min-height: 100vh; animation: revealText 0.8s ease forwards; }
+
+/* Mobile Responsiveness & Stabilization */
+/* Mobile Responsiveness & Stabilization */
+@media (max-width: 768px) {
+    nav {
+        padding: 15px 5%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        height: auto;
+    }
+    
+    .logo {
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .nav-links {
+        order: 3;
+        width: 100%;
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 15px;
+    }
+    
+    .nav-links a {
+        font-size: 11px;
+    }
+    
+    .btn-sleek {
+        padding: 8px 16px;
+        font-size: 11px;
+        width: auto;
+        text-align: center;
+    }
+    
+    h1 {
+        font-size: clamp(2.8rem, 12vw, 4rem);
+        margin-bottom: 20px;
+    }
+    
+    .lead {
+        font-size: 1rem;
+        margin-bottom: 30px;
+        padding: 0 10px;
+    }
+    
+    .page-container {
+        padding: 140px 5% 60px;
+        text-align: center;
+    }
+    
+    .page-container > div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .page-container div[style*="display: flex"] {
+        flex-direction: column;
+        width: 100%;
+        gap: 15px !important;
+    }
+    
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        text-align: left;
+    }
+    
+    .footer-col {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .trust-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        width: 100%;
+    }
+    
+    .counter-value {
+        font-size: 48px;
+    }
+    
+    .auto-sim-track {
+        position: relative;
+        width: 100%;
+        right: 0;
+        top: 20px;
+        height: 380px;
+        margin-bottom: 40px;
+    }
+}
+
+/* iOS Safari Specific Fixes */
+@supports (-webkit-touch-callout: none) {
+    .page-container {
+        min-height: -webkit-fill-available;
+    }
+}
+

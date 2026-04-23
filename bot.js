@@ -1,4 +1,4 @@
-// Ordera Bot Intelligence Core - v3.0 (Adaptive Learning Engine)
+// Ordera Bot Intelligence Core - v4.0 (Advanced Neural Intake)
 let menu = [
     { n: 'Chicken Kottu', p: 850, keys: ['chicken', 'kottu', 'kothu', 'chiken'] },
     { n: 'Seafood Fried Rice', p: 1250, keys: ['seafood', 'rice', 'fried rice', 'sea food'] },
@@ -12,12 +12,9 @@ let menu = [
     { n: 'Chicken Biryani', p: 1350, keys: ['biryani', 'briyani', 'buryani', 'chicken'] }
 ];
 
-// Adaptive Knowledge Base
-let adaptivePatterns = JSON.parse(localStorage.getItem('ordera_adaptive')) || {};
-
 let state = 'START';
 let userName = '';
-let cart = [];
+let cart = []; // Array of { name, quantity, price }
 
 const addMsg = (txt, type) => {
     const d = document.createElement('div');
@@ -39,37 +36,71 @@ const typeBot = (txt, cb) => {
         last.innerHTML = txt;
         area.scrollTop = 9999;
         if (cb) cb();
-    }, 1000 + Math.random() * 500);
+    }, 800 + Math.random() * 400);
 };
 
-const findMenuItem = (input) => {
+const parseInput = (input) => {
     const low = input.toLowerCase();
+    const words = low.split(/[\s,]+/);
+    const results = [];
     
-    // Check Adaptive Patterns first (Learned behavior)
-    if (adaptivePatterns[low]) {
-        console.log(`[Ordera Adaptive]: Using learned pattern for "${low}" -> ${adaptivePatterns[low]}`);
-        return menu.find(m => m.n === adaptivePatterns[low]);
-    }
+    let currentMode = 'ADD';
+    let currentQty = 1;
+    
+    words.forEach((word) => {
+        if (['remove', 'delete', 'cancel', 'drop'].includes(word)) {
+            currentMode = 'REMOVE';
+            return;
+        }
+        if (['add', 'want', 'get', 'need', 'more'].includes(word)) {
+            currentMode = 'ADD';
+            return;
+        }
 
-    for (const item of menu) {
-        if (low.includes(item.n.toLowerCase())) return item;
-    }
-    for (const item of menu) {
-        if (item.keys.some(k => low.includes(k))) return item;
-    }
-    return null;
+        const num = parseInt(word);
+        if (!isNaN(num)) {
+            currentQty = num;
+            return;
+        }
+        
+        const item = menu.find(m => 
+            word.length > 2 && (m.n.toLowerCase().includes(word) || m.keys.some(k => k.includes(word)))
+        );
+        
+        if (item) {
+            results.push({ item, qty: currentQty, mode: currentMode });
+            currentQty = 1;
+        }
+    });
+    
+    return results;
 };
 
-const learnPattern = (input, confirmedItemName) => {
-    const low = input.toLowerCase();
-    adaptivePatterns[low] = confirmedItemName;
-    localStorage.setItem('ordera_adaptive', JSON.stringify(adaptivePatterns));
-    console.log(`[Ordera Adaptive]: New pattern learned: "${low}" maps to ${confirmedItemName}`);
+const updateCart = (actions) => {
+    actions.forEach(action => {
+        const existing = cart.find(c => c.name === action.item.n);
+        if (action.mode === 'ADD') {
+            if (existing) {
+                existing.quantity += action.qty;
+            } else {
+                cart.push({ name: action.item.n, quantity: action.qty, price: action.item.p });
+            }
+        } else {
+            if (existing) {
+                existing.quantity = Math.max(0, existing.quantity - action.qty);
+                if (existing.quantity === 0) {
+                    cart = cart.filter(c => c.name !== action.item.n);
+                }
+            }
+        }
+    });
 };
 
-const showMenu = () => {
-    const list = menu.map(m => `• ${m.n} — Rs. ${m.p}`).join('<br>');
-    typeBot(`Please observe our selection at [Elite Cuisines]:<br><br>${list}<br><br>Which item shall I initialize for you?`);
+const getCartSummary = () => {
+    if (cart.length === 0) return "Your cart is currently empty.";
+    const items = cart.map(c => `${c.quantity}x ${c.name}`).join(', ');
+    const total = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
+    return `Current Order: ${items}. Total: Rs. ${total}.`;
 };
 
 window.handleChat = (e) => {
@@ -83,36 +114,39 @@ window.handleChat = (e) => {
     const low = val.toLowerCase();
 
     if (low.includes('menu')) {
-        showMenu();
+        const list = menu.map(m => `• ${m.n} — Rs. ${m.p}`).join('<br>');
+        typeBot(`Our curated selection:<br><br>${list}<br><br>What would you like to add?`);
         state = 'ORDER';
         return;
     }
 
     if (state === 'START') {
-        typeBot("Greetings. I am the Ordera Bot Adaptive Intelligence [Elite Cuisines - Demo]. May I ask for your name?");
+        typeBot("System ready. Identification required. Please provide your name.");
         state = 'NAME';
     } else if (state === 'NAME') {
         userName = val;
-        typeBot(`Thank you, ${userName}. System uplink established.`);
-        setTimeout(() => showMenu(), 800);
+        typeBot(`Welcome, ${userName}. How can I assist with your order today?`);
         state = 'ORDER';
     } else if (state === 'ORDER') {
-        const item = findMenuItem(val);
-        if (item) {
-            cart.push(item);
-            learnPattern(val, item.n); // Learn the mapping
-            const total = cart.reduce((s, i) => s + i.p, 0);
-            typeBot(`Acknowledged. ${item.n} added to buffer. System has learned this preference. Total: Rs. ${total}. Shall we 'Confirm'?`);
-        } else if (low.includes('confirm') || low.includes('yes') || low.includes('fine')) {
+        const actions = parseInput(val);
+        
+        if (actions.length > 0) {
+            updateCart(actions);
+            const summary = getCartSummary();
+            typeBot(`${summary}<br><br>Would you like to <b>Add</b>, <b>Delete</b>, or <b>Confirm</b>?`);
+        } else if (low.includes('confirm') || low.includes('yes') || low.includes('done')) {
             if (cart.length === 0) {
-                typeBot("The buffer is vacant. Please select an item.");
+                typeBot("Cart is empty. Please specify items to initialize.");
             } else {
-                typeBot(`Validated. Order for ${userName} pushed to kitchen.`);
+                typeBot(`Order validated for ${userName}. Dispatching to kitchen...`);
                 pushKDS();
                 cart = [];
             }
+        } else if (low.includes('no') || low.includes('clear')) {
+            cart = [];
+            typeBot("Cart cleared. System reset to standby.");
         } else {
-            typeBot("I'm adapting to your input... Please specify an item from the menu so I can calibrate.");
+            typeBot("I didn't quite catch that. You can say things like 'Add 2 Kottu' or 'Remove 1 Burger'. Would you like to Add, Delete, or Confirm?");
         }
     }
 };
@@ -122,7 +156,7 @@ const pushKDS = () => {
     const t = `<div class="ticket" id="t-${id}">
         <div style="font-size:10px; color:var(--text-dim);">REF: #${id}</div>
         <div style="font-weight:700; color:var(--accent);">${userName.toUpperCase()}</div>
-        <div style="font-size:13px;">${cart.map(i => `• ${i.n}`).join('<br>')}</div>
+        <div style="font-size:13px;">${cart.map(i => `• ${i.quantity}x ${i.name}`).join('<br>')}</div>
     </div>`;
     const area = document.getElementById('demoKDS');
     if (area) {
@@ -132,5 +166,6 @@ const pushKDS = () => {
 };
 
 setTimeout(() => {
-    if (state === 'START') typeBot("Adaptive System Standby. State 'Hello' to begin.");
+    if (state === 'START') typeBot("Ordera Neural Engine Online. Say 'Hello' to begin.");
 }, 1000);
+
