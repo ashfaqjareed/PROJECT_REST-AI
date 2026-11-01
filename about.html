@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Ordera Bot — Infrastructure Intelligence</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Instrument+Serif:ital,wght@0,400;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="global.css">
+    <style>
+        .matrix {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .matrix-item {
+            background: #111;
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 12px;
+            transition: 0.3s;
+        }
+
+        .matrix-item:hover {
+            border-color: var(--accent);
+            transform: translateY(-10px);
+        }
+
+        .matrix-item h3 {
+            font-family: var(--font-display);
+            font-size: 32px;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .matrix-item p {
+            color: var(--text-dim);
+            font-size: 14px;
+        }
+
+        .live-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 11px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            margin-bottom: 40px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.9);
+                opacity: 0.7;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(0.9);
+                opacity: 0.7;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="scanline-layer"></div>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo" title="Scroll to Top">
+                <img src="ordera-logo.png" alt="Ordera" class="brand-logo-img">
+            </a>
+
+            <div class="nav-center">
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="about.html" class="active">About</a>
+                    <a href="how.html">How it Works</a>
+                    <a href="demo.html">Simulation</a>
+                    <a href="pricing.html">Pricing</a>
+                </div>
+            </div>
+
+            <div class="nav-actions">
+                <a href="https://forms.gle/3M1nWcrCstnnkMfF7" target="_blank" class="btn-nav-form">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                    Fill the Form
+                </a>
+                <div class="nav-status status-online" title="WhatsApp API Online • Direct Uplink">
+                    <div class="nav-status-pulse"></div>
+                    <span class="nav-status-text">WhatsApp Live</span>
+                </div>
+            </div>
+
+            <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="page-container">
+        <div class="live-status">
+            <div class="pulse-dot"></div> System Operational: 99.9% Neural Uplink • Zero-Data Retention
+        </div>
+
+        <div style="max-width: 1100px;">
+            <!-- Parent Company Headline Showcase -->
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 25px; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <img src="northstar-logo.png" alt="NorthStarDevs" style="width: 52px; height: 52px; object-fit: contain; filter: drop-shadow(0 0 12px rgba(209, 255, 82, 0.4));">
+                    <div>
+                        <span style="font-size: 12px; color: var(--accent); font-weight: 800; text-transform: uppercase; letter-spacing: 2px;">Parent Software Firm</span>
+                        <h2 style="font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 4rem); font-style: italic; line-height: 1;">Built by NorthStarDevs</h2>
+                    </div>
+                </div>
+                <a href="https://northstardevs.vercel.app/" target="_blank" class="btn-sleek" style="display: inline-flex; align-items: center; gap: 8px;">
+                    Visit Our Website &rarr;
+                </a>
+            </div>
+
+            <p style="color: #c5cbd0; font-size: 19px; line-height: 1.6; max-width: 850px; margin-bottom: 60px;">
+                Ordera Bot was conceived, architected, and engineered by <strong>NorthStarDevs</strong> — an elite software engineering group dedicated to high-performance hospitality automation, real-time messaging pipelines, and AI systems.
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-bottom: 70px;">
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); padding: 36px; border-radius: 16px;">
+                    <h3 style="color: var(--accent); font-size: 16px; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 2px; font-weight: 700;">
+                        Our Mission
+                    </h3>
+                    <p style="color: var(--text-dim); font-size: 15px; line-height: 1.7;">
+                        Eliminate manual ordering bottlenecks in bustling restaurant kitchens. We turn every customer's WhatsApp account into an instant zero-latency point-of-sale terminal without requiring external apps or downloads.
+                    </p>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); padding: 36px; border-radius: 16px;">
+                    <h3 style="color: var(--accent); font-size: 16px; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 2px; font-weight: 700;">
+                        Engineering & Security
+                    </h3>
+                    <p style="color: var(--text-dim); font-size: 15px; line-height: 1.7;">
+                        Built on isolated microservices, official WhatsApp Cloud APIs, and end-to-end encrypted order buffers. Customer payment receipts, phone numbers, and dining records are protected under enterprise-grade privacy controls.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Engineering Architecture Breakdown -->
+            <h3 style="font-family: var(--font-display); font-size: 34px; font-style: italic; margin-bottom: 25px; color: #fff;">
+                System Stack & Live Capabilities
+            </h3>
+            
+            <div class="matrix" style="margin-top: 0;">
+                <div class="matrix-item">
+                    <div style="font-size: 11px; color: var(--accent); font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px;">LIVE PROTOCOL</div>
+                    <h3>Meta Cloud API</h3>
+                    <p>Official high-throughput WhatsApp business endpoints with 99.98% delivery uptime.</p>
+                </div>
+                <div class="matrix-item">
+                    <div style="font-size: 11px; color: var(--accent); font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px;">DATA SECURITY</div>
+                    <h3>Customer Shield</h3>
+                    <p>Stateless message parsing that protects guest numbers and prevents marketing spam.</p>
+                </div>
+                <div class="matrix-item">
+                    <div style="font-size: 11px; color: var(--accent); font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px;">HARDWARE UPLINK</div>
+                    <h3>KDS Websockets</h3>
+                    <p>Sub-second digital ticket firing directly to kitchen display stations and thermal printers.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="ordera-logo.png" alt="Ordera" class="footer-logo-img">
+                    </div>
+                    <p>The standard in Sri Lankan hospitality automation. Next-generation neural ordering built for scale, precision, and high throughput.</p>
+                    <div class="footer-badge-strip">
+                        <div class="footer-pill-tag"><span></span> 99.8% Neural Accuracy</div>
+                        <div class="footer-pill-tag"><span></span> 24/7 Failover SLA</div>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Platform</h4>
+                    <a href="index.html">Home</a>
+                    <a href="about.html">About Engine</a>
+                    <a href="how.html">How It Works</a>
+                    <a href="demo.html">Interactive Demo <span class="link-tag">Live</span></a>
+                    <a href="pricing.html">Plans &amp; Pricing</a>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Client Intake</h4>
+                    <a href="https://forms.gle/3M1nWcrCstnnkMfF7" target="_blank" style="color: var(--accent); font-weight: 700;">Google Intake Form <span class="link-tag-bright">Direct</span></a>
+                    <a href="onboard.html">Express Onboard</a>
+                    <a href="how.html">Kitchen Display (KDS)</a>
+                    <a href="pricing.html">Plans &amp; Pricing</a>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Direct Contact</h4>
+                    <p style="color: #9ea38e; font-size: 13px; margin-bottom: 12px;">Ordera Bot technical &amp; deployment desk operates 24/7.</p>
+                    <div class="footer-contact-card">
+                        <div class="contact-label">Parent Company Hotline</div>
+                        <a href="https://wa.me/94768325949" class="contact-val" target="_blank">+94 076 832 5949</a>
+                        <a href="https://forms.gle/3M1nWcrCstnnkMfF7" target="_blank" class="footer-form-btn-link">
+                            Fill the Form &rarr;
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-credit">
+                    &copy; 2026 Ordera Bot Infrastructure. Built &amp; Engineered by <a href="https://northstardevs.vercel.app/" target="_blank" class="footer-dev-credit" style="text-decoration: none;">NorthStarDevs</a>.
+                </div>
+                <div class="footer-bottom-links">
+                    <a href="https://forms.gle/3M1nWcrCstnnkMfF7" target="_blank">Partner Form</a>
+                    <a href="pricing.html">Terms &amp; SLA</a>
+                    <a href="about.html">Architecture</a>
+                    <a href="https://wa.me/94768325949" target="_blank">Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="nav.js"></script>
+</body>
+
+</html>

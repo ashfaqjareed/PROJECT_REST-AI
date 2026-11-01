@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing & Deployment — Ordera Bot</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Instrument+Serif:ital,wght@0,400;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="global.css">
+    <style>
+        .pricing-section-container {
+            max-width: 1240px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        /* 7-Day Trial Banner */
+        .trial-badge-banner {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(90deg, rgba(209, 255, 82, 0.15), rgba(37, 211, 102, 0.12));
+            border: 1px solid rgba(209, 255, 82, 0.45);
+            padding: 10px 24px;
+            border-radius: 99px;
+            font-size: 13px;
+            color: #ffffff;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 25px;
+            box-shadow: 0 0 25px rgba(209, 255, 82, 0.15);
+        }
+
+        .trial-badge-banner span {
+            color: var(--accent);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .pricing-main-layout {
+            display: grid;
+            grid-template-columns: 1.15fr 0.95fr 0.9fr;
+            gap: 26px;
+            align-items: stretch;
+            margin-top: 30px;
+            margin-bottom: 40px;
+            text-align: left;
+        }
+
+        .pricing-card {
+            background: #111111;
+            border: 1px solid var(--border);
+            padding: 38px 30px;
+            border-radius: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.35s ease;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(209, 255, 82, 0.35);
+        }
+
+        /* Professional Front & Popped Out */
+        .pricing-card.featured {
+            border: 2px solid var(--accent);
+            background: linear-gradient(180deg, rgba(209, 255, 82, 0.08) 0%, #131710 60%);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(209, 255, 82, 0.2);
+            transform: scale(1.02);
+            z-index: 2;
+        }
+
+        .pricing-card.featured:hover {
+            transform: scale(1.04) translateY(-4px);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(209, 255, 82, 0.3);
+        }
+
+        /* Coming Soon 2027 Blurred Card (Positioned on the Right Side) */
+        .pricing-card.blurred-card {
+            background: #0d0f0c;
+            border: 1px dashed rgba(209, 255, 82, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blurred-card-inner {
+            filter: blur(5px);
+            opacity: 0.35;
+            user-select: none;
+            pointer-events: none;
+            transition: filter 0.4s ease, opacity 0.4s ease;
+        }
+
+        .coming-soon-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle, rgba(10, 12, 8, 0.85) 0%, rgba(5, 7, 5, 0.95) 100%);
+            z-index: 5;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .coming-soon-badge {
+            background: rgba(209, 255, 82, 0.15);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: 800;
+            padding: 6px 14px;
+            border-radius: 99px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .coming-soon-overlay h4 {
+            font-family: var(--font-display);
+            font-size: 26px;
+            font-style: italic;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .coming-soon-overlay p {
+            font-size: 12px;
+            color: var(--text-dim);
+            line-height: 1.5;
+            max-width: 220px;
+        }
+
+        .popular-pill {
+            position: absolute;
+            top: -12px;
+            right: 24px;
+            background: var(--accent);
+            color: #000;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 20px;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+        }
+
+        .plan-header h3 {
+            font-family: var(--font-display);
+            font-size: 32px;
+            font-style: italic;
+            margin-bottom: 6px;
+            color: #ffffff;
+        }
+
+        .plan-desc {
+            color: var(--text-dim);
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            min-height: 40px;
+        }
+
+        .price-wrap {
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .price-num {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--accent);
+            line-height: 1;
+            letter-spacing: -1px;
+        }
+
+        .price-sub {
+            font-size: 12px;
+            color: #9ea38e;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 6px;
+        }
+
+        .trial-callout {
+            font-size: 11px;
+            color: #25D366;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .perks-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 28px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .perks-list li {
+            font-size: 13px;
+            color: #d8d8d8;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            line-height: 1.4;
+        }
+
+        .perks-list li svg {
+            color: var(--accent);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* Long Full-Width Commercial Bank Settlement Card (Spacious, Room to Breathe) */
+        .direct-payment-card {
+            background: linear-gradient(135deg, rgba(20, 26, 12, 0.95) 0%, rgba(10, 13, 8, 0.98) 100%);
+            border: 1px solid rgba(209, 255, 82, 0.35);
+            border-radius: 20px;
+            padding: 38px 42px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), inset 0 0 40px rgba(209, 255, 82, 0.05);
+            margin-top: 25px;
+            margin-bottom: 50px;
+            position: relative;
+            overflow: hidden;
+            text-align: left;
+            transition: border-color 0.35s ease, box-shadow 0.4s ease;
+        }
+
+        .direct-payment-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.85), 0 0 35px rgba(209, 255, 82, 0.25);
+        }
+
+        .direct-payment-card-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr 0.9fr;
+            gap: 36px;
+            align-items: center;
+        }
+
+        .bank-banner-wrap {
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .bank-banner-img {
+            max-width: 100%;
+            height: auto;
+            max-height: 52px;
+            border-radius: 8px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 14px rgba(0,0,0,0.6));
+        }
+
+        .direct-payment-header .pill-tag {
+            background: rgba(37, 211, 102, 0.15);
+            color: #25D366;
+            border: 1px solid rgba(37, 211, 102, 0.35);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .direct-payment-header h3 {
+            font-family: var(--font-display);
+            font-size: 30px;
+            font-style: italic;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        /* Spacious Bank Details Box */
+        .bank-reveal-container {
+            background: #070905;
+            border: 1px solid rgba(209, 255, 82, 0.35);
+            border-radius: 14px;
+            padding: 24px 28px;
+            font-family: monospace;
+            position: relative;
+            font-size: 14px;
+            color: #e2e8d0;
+            line-height: 1.9;
+            box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.8);
+        }
+
+        .reveal-pill-hint {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .bank-reveal-container .copy-icon {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            cursor: pointer;
+            color: var(--accent);
+            font-size: 13px;
+            background: rgba(209, 255, 82, 0.12);
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(209, 255, 82, 0.35);
+            transition: 0.2s;
+            font-family: var(--font-ui);
+            font-weight: 700;
+        }
+
+        .bank-reveal-container .copy-icon:hover {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .guarantee-note {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 14px 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            color: #cfd4b8;
+            margin-top: 16px;
+            line-height: 1.5;
+        }
+
+        .guarantee-note span {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        @media (max-width: 1080px) {
+            .pricing-main-layout {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            .pricing-card.featured {
+                transform: none;
+            }
+            .pricing-card.featured:hover {
+                transform: translateY(-4px);
+            }
+            .direct-payment-card-layout {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            .direct-payment-card {
+                padding: 28px 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="scanline-layer"></div>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo" title="Scroll to Top">
+                <img src="ordera-logo.png" alt="Ordera" class="brand-logo-img">
+            </a>
+
+            <div class="nav-center">
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="about.html">About</a>
+                    <a href="how.html">How it Works</a>
+                    <a href="demo.html">Simulation</a>
+                    <a href="pricing.html" class="active">Pricing</a>
+                </div>
+            </div>
+
+            <div class="nav-actions">
+                <a href="https://forms.gle/3M1nWcrCstnnkMfF7" target="_blank" class="btn-nav-form">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                    Fill the Form
+                </a>
+                <div class="nav-status status-online" title="WhatsApp API Online • Direct Uplink">
+                    <div class="nav-status-pulse"></div>
+                    <span class="nav-status-text">WhatsApp Live</span>
+                </div>
+            </div>
+
+            <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="page-container">
+        <div class="pricing-section-container">
+            <!-- 7-Day Trial Top Announcement -->
+            <div class="trial-badge-banner">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                <span>7-Day Risk-Free Trial:</span> Test Ordera live in your restaurant before locking in. Cancel anytime.
+            </div>
+
+            <h2 style="font-family: var(--font-display); font-size: clamp(2.8rem, 5vw, 4.2rem); font-style: italic; margin-bottom: 12px; line-height: 1.1;">
+                Hospitality Capital Tiers
+            </h2>
+            <p style="color: var(--text-dim); max-width: 650px; margin: 0 auto 30px; font-size: 15px;">
+                Transparent setup and zero commission per order. Select your tier below and activate your WhatsApp ordering uplink.
+            </p>
+
+            <div class="pricing-main-layout">
+                <!-- Tier 1: Starter -->
+                <div class="pricing-card">
+                    <div>
+                        <div class="plan-header">
+                            <h3>Starter Bot</h3>
+                            <p class="plan-desc">Perfect for cafes, cloud kitchens, and single-branch dining venues.</p>
+                        </div>
+                        <div class="price-wrap">
+                            <div class="price-num">Rs. 20,000</div>
+                            <div class="price-sub">One-time Setup & Calibration</div>
+                            <div class="trial-callout">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                7-Day Live Trial Included
+                            </div>
+                        </div>
+
+                        <ul class="perks-list">
+                            <li>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                <span>WhatsApp Native AI Ordering Menu</span>
+                            </li>
+                            <li>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                <span>Instant Sinhala, Tamil & English NLP</span>
+                            </li>
+                            <li>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                <span>Automated Order Buffer & Receipt Generation</span>
+                            </li>
+                            <li>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                <span>Standard Customer WhatsApp Notification</span>
+                            </li>
+                            <li>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                <span>0% Order Commission Fee Forever</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button onclick="selectPlan('Starter', 20000)" class="btn-sleek" style="width: 100%; text-align: center;">Choose Starter</button>
+                </div>
+
+                <!-- Tier 2: Professional (Featured) -->
+                <div class="pricing-card featured">
+                    <div class="popular-pill">Most Popular</div>
+                    <div>
+                        <div class="plan-header">
+                            <h3>Professional</h3>
+                            <p class="plan-desc">For high-throughput restaurants, multi-outlets, and fast-paced franchises.</p>
+                        </div>
+                        <div class="price-wrap">
+                            <div class="price-num">Rs. 35,000</div>
+                            <div class="price-sub">One-time Setup • Rs. 8,500/mo Uptime SLA</div>
+                            <div class="trial-callout">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                7-Day Live Trial Included
+                            </div>
+                        </div>
+
+                        <ul class="perks-list">
+                            <li>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                <span><strong>Everything in Starter Plan</strong></span>
+                            </li>
+                            <li>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                <span>Live Kitchen Display Screen (KDS) Integration</span>
+                            </li>
+                            <li>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                <span>Multi-dialect Slang Pattern Calibration</span>
+                            </li>
+                            <li>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                <span>Priority 24/7 SLA & Live WhatsApp Hotline</span>
+                            </li>
+                            <li>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                <span>Custom Upselling & Dynamic Food Add-ons</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button onclick="selectPlan('Professional', 35000)" class="btn-sleek" style="width: 100%; text-align: center;">Choose Professional</button>
+                </div>
+
+                <!-- Tier 3: Coming Soon 2027 (Blurred Tier) -->
+                <div class="pricing-card blurred-card">
+                    <div class="blurred-card-inner">
+                        <div class="plan-header">
+                            <h3>Enterprise AI Core</h3>
+                            <p class="plan-desc">Autonomous multi-kitchen cluster neural routing and predictive stock dispatch.</p>
+                        </div>
+                        <div class="price-wrap">
+                            <div class="price-num">Rs. 85,000</div>
+                            <div class="price-sub">Cluster Calibration Node</div>
+                        </div>
+                        <ul class="perks-list">
+                            <li><span>Full Multi-branch Neural Matrix</span></li>
+                            <li><span>POS Direct Protocol Bi-directional Sync</span></li>
+                            <li><span>Predictive Inventory Order Auto-Dispatch</span></li>
+                            <li><span>Custom Voice & Slang Speech Models</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="coming-soon-overlay">
+                        <span class="coming-soon-badge">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                            Coming Soon
+                        </span>
+                        <h4>Coming Soon by 2027</h4>
+                        <p>Enterprise multi-branch architecture currently undergoing closed laboratory testing.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full-Width Long Commercial Bank Settlement Card (Spacious, Room to Breathe) -->
+            <div class="direct-payment-card" id="directPaymentBox">
+                <div class="direct-payment-card-layout">
+                    <!-- Column 1: Header + Bank Logo + Selected Tier Info -->
+                    <div>
+                        <div class="bank-banner-wrap">
+                            <img src="commercial-bank-logo.webp" alt="Commercial Bank of Ceylon" class="bank-banner-img">
+                        </div>
+                        <span class="pill-tag">Verified Commercial Bank Uplink</span>
+                        <h3 id="panelPlanName">Starter Bot Calibration</h3>
+                        <p style="font-size: 13px; color: var(--text-dim); line-height: 1.5; margin-bottom: 14px;">
+                            Instantly initiate your 7-day risk-free trial or settle one-time setup fee via secure direct transfer:
+                        </p>
+                        <div style="background: rgba(209, 255, 82, 0.08); border: 1px solid rgba(209, 255, 82, 0.25); padding: 14px 18px; border-radius: 10px;">
+                            <div style="font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px;">Selected Plan Calibration Fee</div>
+                            <div style="font-size: 32px; font-weight: 800; color: var(--accent);" id="selectedAmountDisplay">Rs. 20,000</div>
+                            <div style="font-size: 11px; color: #25D366; font-weight: 600; margin-top: 4px;">Protected by 7-Day Full Trial Warranty</div>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Spacious Bank Account Details with Copy Icon & Hover Reveal -->
+                    <div>
+                        <div class="bank-details-box bank-reveal-container">
+                            <div class="reveal-pill-hint">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                                Official Settlement Uplink
+                            </div>
+                            <div style="line-height: 2; font-size: 14px;">
+                                <strong>Bank:</strong> COMMERCIAL BANK OF CEYLON<br>
+                                <strong>Account Name:</strong> ORDERA BOT INFRASTRUCTURE<br>
+                                <strong>Account Number:</strong> <span id="accNumText" style="color: #fff; font-size: 16px; font-weight: 800; letter-spacing: 1px;">8021194630</span><br>
+                                <strong>Branch:</strong> Wattala Branch
+                            </div>
+                            <span class="copy-icon" onclick="copyAcc()" title="Copy Account Number">
+                                Copy &nbsp;<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Column 3: 7-Day Guarantee & Submit Receipt CTA -->
+                    <div style="display: flex; flex-direction: column; justify-content: space-between; height: 100%; gap: 16px;">
+                        <div class="guarantee-note">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                            <div><span>7-Day Trial Guarantee:</span> Test Ordera live in your venue. If not completely satisfied, receive a 100% full reversal.</div>
+                        </div>
+
+                        <a id="waPayLink" href="https://wa.me/94768325949?text=Hello%20Ordera%20Bot%20team,%20I%20am%20ready%20to%20activate%20my%207-day%20trial%20for%20the%20Starter%20Plan." target="_blank"
+                            style="background: #25D366; color: #000; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 22px; border-radius: 99px; text-decoration: none; font-weight: 800; text-transform: uppercase; font-size: 12px; letter-spacing: 1.2px; box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4); transition: 0.25s ease;"
+                            onmouseover="this.style.filter='brightness(1.1)'; this.style.transform='translateY(-2px)'"
+                            onmouseout="this.style.filter='none'; this.style.transform='none'">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+                            Submit Receipt on WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-top-cta">
+                <div class="footer-top-cta-content">
+                    <h3>Deploy Ordera Bot to Your Restaurant</h3>
+                    <p>Zero missed orders, automated multilingual WhatsApp ordering (Sinhala, Tamil, English), and direct KDS sync. Fill our client intake form to begin.</p>
+                </div>
+                <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+                    <a href="https://forms.gle/3M1nWcrCstnnkMfF7" target="_blank" class="btn-gform">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        Fill Client Form
+                    </a>
+                    <a href="https://wa.me/94768325949" target="_blank" class="btn-sleek">Direct WhatsApp Link</a>
+                </div>
+            </div>
+
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="ordera-logo.png" alt="Ordera" class="footer-logo-img">
+                    </div>
+                    <p>The standard in Sri Lankan hospitality automation. Next-generation neural ordering built for scale, precision, and high throughput.</p>
+                    <div class="footer-badge-strip">
+                        <div class="footer-pill-tag"><span></span> 99.8% Neural Accuracy</div>
+                        <div class="footer-pill-tag"><span></span> 24/7 Failover SLA</div>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Platform</h4>
+                    <a href="index.html">Home</a>
+                    <a href="about.html">About Engine</a>
+                    <a href="how.html">How It Works</a>
+                    <a href="demo.html">Interactive Demo <span class="link-tag">Live</span></a>
+                    <a href="pricing.html">Plans &amp; Pricing</a>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Client Intake</h4>
+                    <a href="https://forms.gle/3M1nWcrCstnnkMfF7" target="_blank" style="color: var(--accent); font-weight: 700;">Google Intake Form <span class="link-tag-bright">Direct</span></a>
+                    <a href="onboard.html">Express Onboard</a>
+                    <a href="how.html">Kitchen Display (KDS)</a>
+                    <a href="pricing.html">Plans &amp; Pricing</a>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Direct Contact</h4>
+                    <p style="color: #9ea38e; font-size: 13px; margin-bottom: 12px;">Ordera Bot technical &amp; deployment desk operates 24/7.</p>
+                    <div class="footer-contact-card">
+                        <div class="contact-label">Parent Company Hotline</div>
+                        <a href="https://wa.me/94768325949" class="contact-val" target="_blank">+94 076 832 5949</a>
+                        <a href="https://forms.gle/3M1nWcrCstnnkMfF7" target="_blank" class="footer-form-btn-link">
+                            Fill the Form &rarr;
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-credit">
+                    &copy; 2026 Ordera Bot Infrastructure. Built &amp; Engineered by <a href="https://northstardevs.vercel.app/" target="_blank" class="footer-dev-credit" style="text-decoration: none;">NorthStarDevs</a>.
+                </div>
+                <div class="footer-bottom-links">
+                    <a href="https://forms.gle/3M1nWcrCstnnkMfF7" target="_blank">Partner Form</a>
+                    <a href="pricing.html">Terms &amp; SLA</a>
+                    <a href="about.html">Architecture</a>
+                    <a href="https://wa.me/94768325949" target="_blank">Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Agency Info Card (Bottom Right Corner) -->
+    <div class="northstar-floating-card">
+        <img src="northstar-logo.png" alt="NorthStarDevs" class="northstar-logo-icon">
+        <div class="northstar-card-info">
+            <div class="northstar-card-title">
+                NorthStarDevs <span>Architect</span>
+            </div>
+            <div class="northstar-card-desc">
+                Engineering AI systems &amp; enterprise software.
+            </div>
+            <a href="https://northstardevs.vercel.app/" target="_blank" class="northstar-website-btn">
+                Visit Our Website &rarr;
+            </a>
+        </div>
+    </div>
+
+    <script src="nav.js"></script>
+
+    <script>
+        const selectPlan = (plan, amount) => {
+            document.getElementById('panelPlanName').innerText = `${plan} Plan Checkout`;
+            document.getElementById('selectedAmountDisplay').innerText = `Rs. ${amount.toLocaleString()}`;
+            document.getElementById('waPayLink').href = `https://wa.me/94768325949?text=Hello%20Ordera%20Bot%20team,%20I%20am%20ready%20to%20activate%20my%207-day%20trial%20for%20the%20${plan}%20Plan.`;
+            
+            const box = document.getElementById('directPaymentBox');
+            box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            box.style.borderColor = 'var(--accent)';
+            box.style.boxShadow = '0 0 35px rgba(209, 255, 82, 0.35)';
+            setTimeout(() => {
+                box.style.boxShadow = '';
+            }, 1500);
+        };
+
+        const copyAcc = () => {
+            const acc = document.getElementById('accNumText').innerText;
+            navigator.clipboard.writeText(acc).then(() => {
+                alert("Commercial Bank Account Number (" + acc + ") copied to clipboard!");
+            }).catch(() => {
+                alert("Account Number: " + acc);
+            });
+        };
+    </script>
+</body>
+
+</html>

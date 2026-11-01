@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How it Works — Ordera Bot</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Instrument+Serif:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="global.css">
+    <style>
+        .how-grid { max-width: 1200px; margin: 60px auto; display: flex; flex-direction: column; gap: 120px; }
+        .how-row { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 100px; align-items: center; }
+        .how-row.rev { direction: rtl; } .how-row.rev * { direction: ltr; }
+        .step-num { font-size: 12px; color: var(--accent); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 24px; font-weight: 700; }
+        .how-row h3 { font-family: var(--font-display); font-size: 56px; margin-bottom: 24px; font-style: italic; }
+        .how-row p { color: var(--text-dim); font-size: 18px; line-height: 1.6; }
+        .how-visual { background: #070707; border: 1px solid var(--border); border-radius: 24px; min-height: 300px; padding: 40px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .matrix { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 80px; }
+        .matrix-item { background: #111; border: 1px solid var(--border); padding: 40px; border-radius: 12px; transition: 0.3s; }
+        .matrix-item h3 { font-family: var(--font-display); font-size: 32px; margin-bottom: 15px; font-style: italic; }
+        .matrix-item p { color: var(--text-dim); font-size: 14px; }
+        .auto-msg-bot { background: #1a1a1a; color: #fff; border-left: 3px solid var(--accent); padding: 12px 20px; border-radius: 8px; font-size: 14px; }
+        .auto-msg-user { background: var(--accent); color: #000; padding: 12px 20px; border-radius: 8px; font-weight: 700; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="scanline-layer"></div>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo" title="Scroll to Top">
+                <img src="ordera-logo.png" alt="Ordera" class="brand-logo-img">
+            </a>
+
+            <div class="nav-center">
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="about.html">About</a>
+                    <a href="how.html" class="active">How it Works</a>
+                    <a href="demo.html">Simulation</a>
+                    <a href="pricing.html">Pricing</a>
+                </div>
+            </div>
+
+            <div class="nav-actions">
+                <a href="https://forms.gle/3M1nWcrCstnnkMfF7" target="_blank" class="btn-nav-form">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                    Fill the Form
+                </a>
+                <div class="nav-status status-online" title="WhatsApp API Online • Direct Uplink">
+                    <div class="nav-status-pulse"></div>
+                    <span class="nav-status-text">WhatsApp Live</span>
+                </div>
+            </div>
+
+            <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="page-container">
+        <div style="text-align: center; margin-bottom: 70px;">
+            <div style="margin-bottom: 16px;">
+                <span class="badge-coming-soon">Sinhala & Tamil Dialect NLP Coming Early 2027</span>
+            </div>
+            <h2 style="font-family: var(--font-display); font-size: clamp(2.8rem, 6vw, 4.5rem); font-style: italic; margin-bottom: 12px; line-height: 1.1;">
+                Complete WhatsApp Order Journey
+            </h2>
+            <p style="color: var(--text-dim); text-transform: uppercase; letter-spacing: 3px; font-size: 13px;">From Customer Greeting to Kitchen Expeditor to Ready for Pickup</p>
+        </div>
+
+        <div class="how-grid">
+            <!-- Step 1 -->
+            <div class="how-row">
+                <div>
+                    <div class="step-num">Step 01: Identification & Warm Greeting</div>
+                    <h3>Customer Names & Greets</h3>
+                    <p>The customer scans the table/flyer QR code or taps your WhatsApp link. They provide their name first. Ordera Bot immediately greets them personally: <em>"Hi [Name]! How are you today? Welcome to our restaurant!"</em> and serves the interactive live digital food menu instantly.</p>
+                </div>
+                <div class="how-visual">
+                    <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+                        <div class="auto-msg-user">Hi, my name is Nuwan!</div>
+                        <div class="auto-msg-bot">Hello Nuwan! 😊 How are you today? Here is our fresh menu. What would you like to order today?</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="how-row rev">
+                <div>
+                    <div class="step-num">Step 02: Smart Menu Selection</div>
+                    <h3>Chooses Menu & Modifiers</h3>
+                    <p>The guest selects their desired food dishes (e.g. 2x Chicken Kottu, extra cheese, spicy gravy). Ordera Bot validates pricing, calculates subtotal, taxes, and automatically checks inventory availability.</p>
+                </div>
+                <div class="how-visual">
+                    <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+                        <div class="auto-msg-user">I would like 2 Chicken Kottu with extra spicy gravy.</div>
+                        <div class="auto-msg-bot">Got it! 2x Chicken Kottu added with extra spicy gravy. (Total: Rs. 2,000). Table #4.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="how-row">
+                <div>
+                    <div class="step-num">Step 03: Review, Edit & Final Confirmation</div>
+                    <h3>Flexible Item Update or Lock-In</h3>
+                    <p>Before placing the ticket, the AI explicitly asks the customer if they wish to add items, modify spice levels, delete anything, or confirm. Once the guest confirms, the ticket is finalized with an automated itemized summary receipt.</p>
+                </div>
+                <div class="how-visual">
+                    <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+                        <div class="auto-msg-bot">Would you like to add beverages, delete anything, or confirm your order?</div>
+                        <div class="auto-msg-user">All looks great, confirm please! ✅</div>
+                        <div class="auto-msg-bot" style="border-left-color: #25D366;">🎉 Confirmed! Ticket #204 locked in.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="how-row rev">
+                <div>
+                    <div class="step-num">Step 04: Manager & Owner Relay</div>
+                    <h3>Instant Manager Approval & Sync</h3>
+                    <p>The moment the customer confirms, the order is dispatched in real-time to the manager's terminal/WhatsApp dashboard. The manager verifies special requests and instantly routes the ticket to the kitchen station.</p>
+                </div>
+                <div class="how-visual">
+                    <div style="background: #111; border: 1px solid rgba(209, 255, 82, 0.4); padding: 22px; border-radius: 12px; width: 100%;">
+                        <div style="font-size: 11px; color: var(--accent); font-weight: 800; letter-spacing: 1.5px; margin-bottom: 6px;">MANAGER DASHBOARD • UPLINK ACTIVE</div>
+                        <div style="color: #fff; font-size: 16px; font-weight: 700;">Incoming Order #204: Nuwan (Table 4)</div>
+                        <div style="font-size: 13px; color: #a5aba0; margin-top: 4px;">Verified & Dispatched to Kitchen Display System (KDS) →</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="how-row">
+                <div>
+                    <div class="step-num">Step 05: Kitchen Prep & One-Click Readiness</div>
+                    <h3>Kitchen Reads & Hits 'Ready'</h3>
+                    <p>The kitchen crew receives the digital KOT on their kitchen display device. Once the food is cooked and plated, the chef simply taps the <strong>'Food Ready'</strong> button on their screen.</p>
+                </div>
+                <div class="how-visual">
+                    <div style="background: #0d120a; border: 1.5px solid var(--accent); padding: 24px; border-radius: 14px; text-align: center; width: 100%;">
+                        <div style="font-size: 11px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 8px;">KITCHEN TOUCH TERMINAL</div>
+                        <div style="font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 14px;">Order #204: 2x Chicken Kottu</div>
+                        <div style="background: var(--accent); color: #000; font-weight: 800; font-size: 13px; padding: 10px 18px; border-radius: 8px; display: inline-block; text-transform: uppercase;">✔ Click: Food Is Ready</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="how-row rev">
+                <div>
+                    <div class="step-num">Step 06: Automated Customer Pickup Notification</div>
+                    <h3>Guest Alerted to Pickup</h3>
+                    <p>The instant the kitchen marks the dish as ready, the Ordera Bot AI API fires an immediate WhatsApp notification directly to the customer: <em>"Nuwan, your piping hot food is ready! Please come and pick it up from Counter A."</em></p>
+                </div>
+                <div class="how-visual">
+                    <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+                        <div class="auto-msg-bot" style="border-left-color: #25D366; background: #131c0e;">
+                            🔔 <strong>Order Ready!</strong> Hi Nuwan, your food is fresh and ready. Please come and pick up your meal at Counter A!
+                        </div>
+                        <div class="auto-msg-user">Awesome, heading over now! Thank you! 🏃‍♂️</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 100px;">
+             <h2 style="font-family: var(--font-display); font-size: 56px; font-style: italic; margin-bottom: 40px; text-align: center;">Ecosystem Pillars</h2>
+             <div class="matrix">
+                <div class="matrix-item">
+                    <h3>Language Roadmap</h3>
+                    <p>Full Sinhala and Tamil dialect NLP model coming early 2027. English and Romanized Singlish/Tanglish active right now.</p>
+                </div>
+                <div class="matrix-item">
+                    <h3>Zero Friction KDS</h3>
+                    <p>Direct touch integration for kitchen tablets and chef expeditor screens with sub-second websocket sync.</p>
+                </div>
+                <div class="matrix-item">
+                    <h3>Zero Lost Orders</h3>
+                    <p>Dual redundancy buffer ensures every order is acknowledged, verified, printed, and recorded with zero manual error.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="ordera-logo.png" alt="Ordera" class="footer-logo-img">
+                    </div>
+                    <p>The standard in Sri Lankan hospitality automation. Next-generation neural ordering built for scale, precision, and high throughput.</p>
+                    <div class="footer-badge-strip">
+                        <div class="footer-pill-tag"><span></span> 99.8% Neural Accuracy</div>
+                        <div class="footer-pill-tag"><span></span> 24/7 Failover SLA</div>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Platform</h4>
+                    <a href="index.html">Home</a>
+                    <a href="about.html">About Engine</a>
+                    <a href="how.html">How It Works</a>
+                    <a href="demo.html">Interactive Demo <span class="link-tag">Live</span></a>
+                    <a href="pricing.html">Plans &amp; Pricing</a>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Client Intake</h4>
+                    <a href="https://forms.gle/3M1nWcrCstnnkMfF7" target="_blank" style="color: var(--accent); font-weight: 700;">Google Intake Form <span class="link-tag-bright">Direct</span></a>
+                    <a href="onboard.html">Express Onboard</a>
+                    <a href="how.html">Kitchen Display (KDS)</a>
+                    <a href="pricing.html">Plans &amp; Pricing</a>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Direct Contact</h4>
+                    <p style="color: #9ea38e; font-size: 13px; margin-bottom: 12px;">Ordera Bot technical &amp; deployment desk operates 24/7.</p>
+                    <div class="footer-contact-card">
+                        <div class="contact-label">Parent Company Hotline</div>
+                        <a href="https://wa.me/94768325949" class="contact-val" target="_blank">+94 076 832 5949</a>
+                        <a href="https://forms.gle/3M1nWcrCstnnkMfF7" target="_blank" class="footer-form-btn-link">
+                            Fill the Form &rarr;
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-credit">
+                    &copy; 2026 Ordera Bot Infrastructure. Built &amp; Engineered by <a href="https://northstardevs.vercel.app/" target="_blank" class="footer-dev-credit" style="text-decoration: none;">NorthStarDevs</a>.
+                </div>
+                <div class="footer-bottom-links">
+                    <a href="https://forms.gle/3M1nWcrCstnnkMfF7" target="_blank">Partner Form</a>
+                    <a href="pricing.html">Terms &amp; SLA</a>
+                    <a href="about.html">Architecture</a>
+                    <a href="https://wa.me/94768325949" target="_blank">Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="nav.js"></script>
+</body>
+</html>
