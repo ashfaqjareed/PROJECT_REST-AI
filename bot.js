@@ -114,7 +114,7 @@ window.handleChat = (e) => {
     const low = val.toLowerCase();
 
     if (low.includes('menu')) {
-        const list = menu.map(m => `• ${m.n} — Rs. ${m.p}`).join('<br>');
+        const list = menu.map(m => `• ${m.n} :  Rs. ${m.p}`).join('<br>');
         typeBot(`Our curated selection:<br><br>${list}<br><br>What would you like to add?`);
         state = 'ORDER';
         return;
