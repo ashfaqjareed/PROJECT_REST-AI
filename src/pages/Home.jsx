@@ -28,7 +28,7 @@ import {
 import { ChevronDownIcon, PhoneIcon, WhatsAppIcon, FoodIcon } from "../components/Icons";
 
 const SIX_MOVES = [
-  { step: "01", title: "CUSTOMER TAPS", desc: "Customer messages your restaurant WhatsApp number and taps through the visual menu categories.", scene: PersonPhoneScene },
+  { step: "01", title: "CUSTOMER TAP", desc: "Customer messages your restaurant WhatsApp number and taps through the visual menu categories.", scene: PersonPhoneScene },
   { step: "02", title: "ORDER LANDS", desc: "Order arrives instantly on the manager dashboard with a double alert pulse and sequential reference.", scene: QueueCounterScene },
   { step: "03", title: "MANAGER ACCEPTS", desc: "Manager reviews the items, taps Accept, and dispatches the ticket directly to the kitchen display.", scene: KitchenBellScene },
   { step: "04", title: "KITCHEN COOKS", desc: "Kitchen staff see live order tickets in clear sequence, prepare the dishes, and tap Mark Ready.", scene: KitchenBellScene },
@@ -37,7 +37,8 @@ const SIX_MOVES = [
 ];
 
 const SECTOR_ICONS = {
-  restaurants: RestaurantSectorScene,
+  add .
+    restaurants: RestaurantSectorScene,
   cafes: CafeSectorScene,
   canteens: CanteenSectorScene,
   bakeries: BakerySectorScene,
