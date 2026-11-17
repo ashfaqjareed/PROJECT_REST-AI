@@ -1,0 +1,13 @@
+{
+  "redirects": [
+    { "source": "/index.html", "destination": "/", "permanent": true },
+    { "source": "/about.html", "destination": "/how-it-works", "permanent": true },
+    { "source": "/how.html", "destination": "/how-it-works", "permanent": true },
+    { "source": "/demo.html", "destination": "/", "permanent": true },
+    { "source": "/pricing.html", "destination": "/pricing", "permanent": true },
+    { "source": "/onboard.html", "destination": "/onboard", "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
