@@ -4,8 +4,6 @@ import { sectors } from "../data/sectors";
 import { siteConfig } from "../data/site";
 import { pricingPlans } from "../data/pricing";
 import { useHead } from "../hooks/useHead";
-import { ChamferButton } from "../components/ChamferButton";
-import { OpposingTextRails } from "../components/OpposingTextRails";
 import { SavingsEstimator } from "../components/SavingsEstimator";
 import {
   RestaurantSectorScene,
@@ -28,7 +26,7 @@ const SECTOR_SCENES = {
 
 export default function SectorPage() {
   const { slug } = useParams();
-  const sector = sectors.find(s => s.slug === slug) || sectors[0];
+  const sector = sectors.find((s) => s.slug === slug) || sectors[0];
   const SceneComponent = SECTOR_SCENES[sector.slug] || RestaurantSectorScene;
 
   useHead({
@@ -39,60 +37,70 @@ export default function SectorPage() {
 
   const [openFaq, setOpenFaq] = useState(null);
   const [sliderMinutes, setSliderMinutes] = useState(14);
-  const [revealedPhone, setRevealedPhone] = useState(false);
 
   const isComingNext = sector.status === "Coming Next";
-  const planMatch = pricingPlans.find(p => p.name === sector.planFit) || pricingPlans[0];
+  const planMatch = pricingPlans.find((p) => p.name === sector.planFit) || pricingPlans[0];
 
   return (
-    <div className="sector-page-wrap">
-      {/* a. Title Band */}
-      <section className="sector-title-band">
-        <OpposingTextRails title={sector.name.toUpperCase()} />
-        <div className="container content-layer">
-          <div className="sector-status-pill font-mono">
-            <span className={`status-led ${isComingNext ? "led-ember" : "led-lime"}`} aria-hidden="true" />
-            <span>{sector.status}</span>
-          </div>
+    <div className="sector-brex-page">
+      {/* 1. Sector Hero */}
+      <section className="brex-hero-section">
+        <div className="container">
+          <div className="brex-hero-center text-center">
+            <div className="brex-eyebrow-pill font-mono">
+              <span className={`eyebrow-dot ${isComingNext ? "ember" : ""}`} />
+              <span>{sector.status} • {sector.name.toUpperCase()} SOLUTION</span>
+            </div>
 
-          <h1 className="sector-page-h1 font-display">
-            {sector.headline}
-          </h1>
+            <h1 className="brex-hero-h1 font-display">
+              {sector.headline}
+            </h1>
 
-          <div className="sector-btn-row">
-            <ChamferButton
-              to={`/onboard?type=${encodeURIComponent(sector.name)}`}
-              variant="primary"
-            >
-              {isComingNext ? "Join The Early List" : "Get Started"}
-            </ChamferButton>
-            <ChamferButton
-              href={siteConfig.whatsappLink}
-              variant="secondary"
-            >
-              WhatsApp Us
-            </ChamferButton>
+            <p className="brex-hero-p font-body">
+              Ordera gives your staff their counter hours back. No phone interruptions, no incorrect orders, and clean pickup verification with a 4-digit PIN.
+            </p>
+
+            <div className="brex-hero-actions">
+              <Link
+                to={`/onboard?type=${encodeURIComponent(sector.name)}`}
+                className="brex-btn-primary font-body"
+              >
+                {isComingNext ? "Join The Early List" : "Get Started"}
+              </Link>
+              <a
+                href={siteConfig.whatsappLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="brex-btn-secondary font-body"
+              >
+                WhatsApp Us
+              </a>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* b. The Problem */}
-      <section className="night-section border-top border-bottom">
+      {/* 2. Problems & Where Service Stalls */}
+      <section className="brex-section border-top border-bottom">
         <div className="container">
-          <div className="section-label-col font-mono">THE PROBLEM</div>
-          <div className="sector-problem-grid">
-            <div className="scene-col">
-              <SceneComponent />
+          <div className="section-label-pill font-mono text-center">THE CHALLENGE</div>
+          <h2 className="brex-section-h2 font-display text-center">
+            WHERE SERVICE STALLS TODAY
+          </h2>
+
+          <div className="how-dual-showcase">
+            <div className="showcase-card-tile" style={{ justifyContent: "center", alignItems: "center" }}>
+              <div className="tile-scene" style={{ maxWidth: "340px", width: "100%" }}>
+                <SceneComponent />
+              </div>
             </div>
-            <div className="problems-col">
-              <h2 className="section-heading font-display">
-                WHERE SERVICE STALLS TODAY
-              </h2>
-              <div className="problem-rows-list">
+
+            <div className="showcase-info-col">
+              <div className="sector-problem-list">
                 {sector.problems.map((prob, i) => (
-                  <div key={i} className="problem-row">
-                    <span className="problem-num font-mono">{String(i + 1).padStart(2, "0")}</span>
-                    <span className="problem-text">{prob}</span>
+                  <div key={i} className="sector-prob-item">
+                    <span className="prob-idx font-mono highlight-lime-text">{String(i + 1).padStart(2, "0")}</span>
+                    <p className="prob-text font-body">{prob}</p>
                   </div>
                 ))}
               </div>
@@ -101,65 +109,39 @@ export default function SectorPage() {
         </div>
       </section>
 
-      {/* c. Why Ordera Fits Here (Six Moves) */}
-      <section className="night-section border-bottom">
+      {/* 3. Six Moves for this Sector */}
+      <section className="brex-section border-bottom">
         <div className="container">
-          <div className="section-label-col font-mono">WORKFLOW</div>
-          <h2 className="section-heading font-display">
+          <div className="section-label-pill font-mono text-center">WORKFLOW</div>
+          <h2 className="brex-section-h2 font-display text-center">
             HOW ORDERS MOVE IN YOUR VENUE
           </h2>
-          <div className="six-moves-horizontal">
+
+          <div className="how-timeline-cards-grid">
             {sector.sixMoves.map((m) => (
-              <div key={m.step} className="move-card chamfer-card">
-                <div className="move-step-num font-mono highlight-lime-text">{m.step}</div>
-                <div className="move-title font-display">{m.title}</div>
-                <p className="move-desc">{m.desc}</p>
+              <div key={m.step} className="timeline-card">
+                <span className="t-node-num highlight-lime-text font-mono">{m.step}</span>
+                <div className="t-node-title font-display">{m.title}</div>
+                <p className="t-node-desc font-body">{m.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* d. How Much Time */}
-      <section className="night-section border-bottom">
+      {/* 4. Time Gained Slider */}
+      <section className="brex-section border-bottom">
         <div className="container">
-          <div className="section-label-col font-mono">TIME GAINED</div>
-          <h2 className="section-heading font-display">
-            MINUTES RECLAIMED PER CUSTOMER
+          <div className="section-label-pill font-mono text-center">TIME SAVED</div>
+          <h2 className="brex-section-h2 font-display text-center">
+            MINUTES RECLAIMED PER ORDER
           </h2>
 
-          {sector.slug === "canteens" ? (
-            <div className="canteen-baseline-box chamfer-card">
-              <div className="baseline-header font-mono">
-                OBSERVED UNIVERSITY CANTEEN BREAK (23 MINUTES TOTAL QUEUE)
-              </div>
-              <div className="canteen-bars">
-                <div className="canteen-bar-row">
-                  <span className="bar-tag font-mono">TODAY</span>
-                  <div className="bar-track">
-                    <div className="bar-fill fill-ember" style={{ width: "100%" }}>
-                      <span>8m Order + 5m Bill + 10m Wait</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="canteen-bar-row">
-                  <span className="bar-tag font-mono highlight-lime-text">WITH ORDERA</span>
-                  <div className="bar-track">
-                    <div className="bar-fill fill-lime" style={{ width: "9%" }}>
-                      <span>2m Handover</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="baseline-note font-mono">
-                Students order from class and walk in when notified ready.
-              </div>
-            </div>
-          ) : (
-            <div className="time-slider-box chamfer-card">
-              <div className="slider-header font-mono">
-                <span>AVERAGE COUNTER WAIT TODAY: {sliderMinutes} MINUTES</span>
-                <span className="example-tag">Example, set your own numbers</span>
+          <div className="brex-wait-card">
+            <div className="wait-compare-row">
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }} className="font-mono">
+                <span>ESTIMATED COUNTER WAIT TODAY: <strong>{sliderMinutes} MINUTES</strong></span>
+                <span style={{ color: "var(--text-muted)" }}>Drag slider to estimate</span>
               </div>
               <input
                 type="range"
@@ -167,95 +149,100 @@ export default function SectorPage() {
                 max="30"
                 value={sliderMinutes}
                 onChange={(e) => setSliderMinutes(Number(e.target.value))}
-                className="estimator-slider"
+                className="calc-range-slider"
                 aria-label="Average counter wait"
               />
-              <div className="slider-comparison-bars">
-                <div className="canteen-bar-row">
-                  <span className="bar-tag font-mono">WAIT TODAY</span>
-                  <div className="bar-track">
-                    <div className="bar-fill fill-ember" style={{ width: `${Math.min(100, sliderMinutes * 3.3)}%` }}>
-                      <span>{sliderMinutes} minutes standing</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="canteen-bar-row">
-                  <span className="bar-tag font-mono highlight-lime-text">WITH ORDERA</span>
-                  <div className="bar-track">
-                    <div className="bar-fill fill-lime" style={{ width: "10%" }}>
-                      <span>1 to 2m PIN handover</span>
-                    </div>
-                  </div>
+            </div>
+
+            <div className="wait-compare-row">
+              <span className="wait-row-label font-mono">STANDING IN LINE TODAY</span>
+              <div className="wait-track-bar">
+                <div className="wait-bar-fill today" style={{ width: `${Math.min(100, sliderMinutes * 3.3)}%` }}>
+                  <span>{sliderMinutes} minutes in line</span>
                 </div>
               </div>
             </div>
-          )}
-        </div>
-      </section>
 
-      {/* e. How Much Money: Savings Estimator */}
-      <section className="night-section border-bottom">
-        <div className="container">
-          <div className="section-label-col font-mono">REVENUE RECOVERY</div>
-          <h2 className="section-heading font-display">
-            CALCULATE YOUR MONTHLY REVENUE GAIN
-          </h2>
-          <SavingsEstimator initialPreset={sector.estimatorPreset} />
-        </div>
-      </section>
-
-      {/* f. Plan Fit & Setup Duration */}
-      <section className="night-section border-bottom">
-        <div className="container">
-          <div className="section-label-col font-mono">SETUP AND PLANS</div>
-          <h2 className="section-heading font-display">
-            RECOMMENDED PLAN & SETUP
-          </h2>
-          <div className="sector-plan-fit-card chamfer-card">
-            <div className="plan-fit-header">
-              <span className="fit-plan-name font-display">{planMatch.name} PLAN</span>
-              <span className="fit-plan-cost font-mono highlight-lime-text">
-                {planMatch.setupFee} setup, then {planMatch.monthlyFee} / month
-              </span>
-            </div>
-            <p className="fit-plan-desc">{planMatch.target}</p>
-            <div className="fit-benefits-grid">
-              {planMatch.serviceBenefits.map((b, i) => (
-                <div key={i} className="fit-benefit-item font-mono">
-                  <span className="benefit-dash">✓</span>
-                  <span>{b}</span>
+            <div className="wait-compare-row">
+              <span className="wait-row-label font-mono highlight-lime-text">WITH ORDERA</span>
+              <div className="wait-track-bar">
+                <div className="wait-bar-fill ordera" style={{ width: "12%" }}>
+                  <span>1 to 2m PIN Handover</span>
                 </div>
-              ))}
-            </div>
-            {/* FOUNDER TO CONFIRM: setup days */}
-            <div className="fit-setup-time font-mono">
-              Ready in {siteConfig.setupWorkingDays} working days.
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* g. Questions for this Sector */}
-      <section className="night-section border-bottom">
+      {/* 5. Revenue Gain Calculator */}
+      <section className="brex-section border-bottom">
         <div className="container">
-          <div className="section-label-col font-mono">QUESTIONS</div>
-          <h2 className="section-heading font-display">
+          <div className="section-label-pill font-mono text-center">ROI CALCULATOR</div>
+          <h2 className="brex-section-h2 font-display text-center">
+            CALCULATE YOUR REVENUE GAIN
+          </h2>
+          <SavingsEstimator initialPreset={sector.estimatorPreset} />
+        </div>
+      </section>
+
+      {/* 6. Recommended Plan */}
+      <section className="brex-section border-bottom">
+        <div className="container">
+          <div className="section-label-pill font-mono text-center">PLAN FIT</div>
+          <h2 className="brex-section-h2 font-display text-center">
+            RECOMMENDED PLAN FOR {sector.name.toUpperCase()}
+          </h2>
+
+          <div className="brex-pricing-card highlighted" style={{ maxWidth: "600px", margin: "0 auto" }}>
+            <div className="pricing-badge font-mono">BEST FIT</div>
+            <h3 className="pricing-name font-display">{planMatch.name} PLAN</h3>
+            <p className="pricing-sub font-body">{planMatch.target}</p>
+
+            <div className="pricing-number font-display">
+              {planMatch.monthlyFee}
+              <span className="pricing-freq font-mono"> / month</span>
+            </div>
+            <div className="pricing-setup font-mono">Setup fee: {planMatch.setupFee} once (Ready in 2 days)</div>
+
+            <ul className="pricing-limits-list font-mono">
+              {planMatch.serviceBenefits.map((b, i) => (
+                <li key={i}>✓ {b}</li>
+              ))}
+            </ul>
+
+            <Link
+              to={`/onboard?plan=${planMatch.id}&type=${encodeURIComponent(sector.name)}`}
+              className="pricing-action-btn btn-solid font-body"
+            >
+              Choose {planMatch.name} For {sector.name}
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. Sector FAQ */}
+      <section className="brex-section border-bottom">
+        <div className="container">
+          <div className="section-label-pill font-mono text-center">QUESTIONS</div>
+          <h2 className="brex-section-h2 font-display text-center">
             QUESTIONS FOR {sector.name.toUpperCase()}
           </h2>
-          <div className="faq-accordions-group">
+
+          <div className="brex-faq-accordion">
             {sector.faq.map((item, idx) => (
-              <div key={idx} className="faq-night-row">
+              <div key={idx} className="faq-item-row">
                 <button
                   type="button"
-                  className="faq-toggle-btn"
+                  className="faq-question-btn"
                   onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
                   aria-expanded={openFaq === idx}
                 >
-                  <span className="faq-q-text">{item.question}</span>
-                  <ChevronDownIcon size={18} className={`faq-chevron ${openFaq === idx ? "open" : ""}`} />
+                  <span className="faq-q-title">{item.question}</span>
+                  <ChevronDownIcon size={18} className={`faq-arrow ${openFaq === idx ? "open" : ""}`} />
                 </button>
                 {openFaq === idx && (
-                  <div className="faq-answer-block">
+                  <div className="faq-answer-content font-body">
                     <p>{item.answer}</p>
                   </div>
                 )}
@@ -265,47 +252,19 @@ export default function SectorPage() {
         </div>
       </section>
 
-      {/* h. CTA Band & Tap to Reveal */}
-      <section className="night-section sector-cta-section">
+      {/* 8. CTA */}
+      <section className="brex-section brex-contact-cta text-center">
         <div className="container">
-          <h2 className="cta-big-title font-display">
-            {isComingNext ? "BE THE FIRST IN YOUR SECTOR TO LAUNCH" : "BRING ORDER TO YOUR COUNTER TODAY"}
+          <h2 className="brex-cta-title font-display">
+            READY TO STREAMLINE {sector.name.toUpperCase()} ORDERS?
           </h2>
-          <div className="sector-cta-buttons">
-            <ChamferButton
-              to={`/onboard?type=${encodeURIComponent(sector.name)}`}
-              variant="primary"
-            >
-              {isComingNext ? "Join The Early List" : "Start Onboarding"}
-            </ChamferButton>
-            <ChamferButton
-              href={siteConfig.whatsappLink}
-              variant="secondary"
-            >
-              WhatsApp Us
-            </ChamferButton>
-          </div>
-
-          <div className="tap-reveal-block">
-            {!revealedPhone ? (
-              <button
-                type="button"
-                className="tap-reveal-btn font-mono"
-                onClick={() => setRevealedPhone(true)}
-              >
-                Tap to Reveal Direct Hotline
-              </button>
-            ) : (
-              <div className="revealed-phone-row">
-                <span className="revealed-num font-display">{siteConfig.phoneDisplay}</span>
-                <a href={siteConfig.telLink} className="contact-action-btn font-mono" aria-label="Call">
-                  <PhoneIcon size={14} /> CALL
-                </a>
-                <a href={siteConfig.whatsappLink} target="_blank" rel="noopener noreferrer" className="contact-action-btn wa font-mono" aria-label="WhatsApp">
-                  <WhatsAppIcon size={14} /> WHATSAPP
-                </a>
-              </div>
-            )}
+          <div className="brex-hero-actions">
+            <Link to={`/onboard?type=${encodeURIComponent(sector.name)}`} className="brex-btn-primary font-body">
+              Start Onboarding
+            </Link>
+            <a href={siteConfig.whatsappLink} target="_blank" rel="noopener noreferrer" className="brex-btn-secondary font-body">
+              WhatsApp Our Desk
+            </a>
           </div>
         </div>
       </section>

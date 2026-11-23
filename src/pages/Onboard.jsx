@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import { siteConfig } from "../data/site";
 import {
   FALLBACK_GOOGLE_FORM_URL,
@@ -111,24 +111,24 @@ export default function Onboard() {
   return (
     <div className="onboard-page-container">
       <div className="container">
+        {/* Centered Intro Header */}
+        <div className="onboard-header-centered text-center">
+          <div className="section-label-col font-mono">ONBOARDING</div>
+          <h1 className="onboard-main-h1 font-display">
+            SET UP YOUR RESTAURANT ORDER DESK
+          </h1>
+          <p className="onboard-main-sub font-body">
+            Answer 6 quick questions in under a minute. We configure your menu, connect your WhatsApp number, and train your staff.
+          </p>
+        </div>
+
         <div className="onboard-split-layout">
           {/* Left Column: Context and Timeline */}
           <div className="onboard-info-sidebar">
-            <h1 className="onboard-main-h1 font-display">
-              SET UP YOUR RESTAURANT ORDER DESK
-            </h1>
-            <p className="onboard-main-sub font-body">
-              Answer 6 quick questions in under a minute. We configure your menu, connect your WhatsApp number, and train your staff.
-            </p>
-
-            <div className="onboard-scene-wrap">
-              <PersonPhoneScene />
-            </div>
-
             <div className="onboard-timeline-box chamfer-card font-mono">
               <div className="timeline-box-title">ONBOARDING TIMELINE:</div>
               <div className="timeline-steps-seq">
-                {siteConfig.onboardingSteps.map((step) => (
+                {(siteConfig.onboardingSteps || []).map((step) => (
                   <div key={step.step} className="timeline-seq-item">
                     <span className="step-num highlight-lime-text">{step.step}</span>
                     <div className="step-body">
@@ -138,9 +138,26 @@ export default function Onboard() {
                 ))}
               </div>
             </div>
+
+            <div className="onboard-scene-wrap">
+              <PersonPhoneScene />
+            </div>
+
+            <div className="sidebar-support-card chamfer-card font-mono text-center">
+              <div>Need help with your setup?</div>
+              <a
+                href={siteConfig.whatsappLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="highlight-lime-text"
+                style={{ textDecoration: "underline", marginTop: "4px", display: "inline-block" }}
+              >
+                Chat on WhatsApp: {siteConfig.phoneDisplay}
+              </a>
+            </div>
           </div>
 
-          {/* Right Column: Active Interactive Card */}
+          {/* Right Column: Active Interactive Form Card */}
           <div className="onboard-card-col">
             <div className="onboard-flow-card chamfer-card">
               {/* Progress Bar Header */}
@@ -170,8 +187,8 @@ export default function Onboard() {
                   {/* STEP 1: Contact Details */}
                   {currentStep === 1 && (
                     <div className="step-screen">
-                      <h2 className="step-question font-display">ABOUT YOU</h2>
-                      <p className="step-hint font-body">Who should our Colombo desk coordinate with?</p>
+                      <h2 className="step-question font-display text-center">ABOUT YOU</h2>
+                      <p className="step-hint font-body text-center">Who should our Colombo desk coordinate with?</p>
 
                       <div className="flow-field-group">
                         <label className="flow-label font-mono">YOUR NAME *</label>
@@ -181,7 +198,6 @@ export default function Onboard() {
                           onChange={(e) => updateField("ownerName", e.target.value)}
                           placeholder="Nuwan Perera"
                           className={`flow-input ${errors.ownerName ? "input-err" : ""}`}
-                          autoFocus
                         />
                         {errors.ownerName && <span className="field-err font-mono">{errors.ownerName}</span>}
                       </div>
@@ -238,8 +254,8 @@ export default function Onboard() {
                   {/* STEP 2: Business Name */}
                   {currentStep === 2 && (
                     <div className="step-screen">
-                      <h2 className="step-question font-display">WHAT IS YOUR VENUE NAME?</h2>
-                      <p className="step-hint font-body">The restaurant, cafe, or canteen name displayed to customers.</p>
+                      <h2 className="step-question font-display text-center">WHAT IS YOUR VENUE NAME?</h2>
+                      <p className="step-hint font-body text-center">The restaurant, cafe, or canteen name displayed to customers.</p>
                       <div className="flow-field-group" style={{ marginTop: "1.5rem" }}>
                         <input
                           type="text"
@@ -247,7 +263,6 @@ export default function Onboard() {
                           onChange={(e) => updateField("businessName", e.target.value)}
                           placeholder="e.g. Royal Bakes & Kitchen"
                           className={`flow-input font-display big-text ${errors.businessName ? "input-err" : ""}`}
-                          autoFocus
                           onKeyDown={(e) => {
                             if (e.key === "Enter" && formData.businessName.trim()) {
                               setCurrentStep(3);
@@ -272,8 +287,8 @@ export default function Onboard() {
                   {/* STEP 3: Business Type */}
                   {currentStep === 3 && (
                     <div className="step-screen">
-                      <h2 className="step-question font-display">WHAT TYPE OF VENUE?</h2>
-                      <p className="step-hint font-body">Select the category that best fits your operation.</p>
+                      <h2 className="step-question font-display text-center">WHAT TYPE OF VENUE?</h2>
+                      <p className="step-hint font-body text-center">Select the category that best fits your operation.</p>
                       <div className="tap-options-grid font-mono">
                         {["Restaurant", "Cafe", "Canteen", "Bakery", "Flower Shop", "Boutique"].map((t) => (
                           <button
@@ -295,8 +310,8 @@ export default function Onboard() {
                   {/* STEP 4: Menu Size */}
                   {currentStep === 4 && (
                     <div className="step-screen">
-                      <h2 className="step-question font-display">HOW LARGE IS YOUR MENU?</h2>
-                      <p className="step-hint font-body">Estimated number of active food or beverage dishes.</p>
+                      <h2 className="step-question font-display text-center">HOW LARGE IS YOUR MENU?</h2>
+                      <p className="step-hint font-body text-center">Estimated number of active food or beverage dishes.</p>
                       <div className="tap-options-grid font-mono">
                         {[
                           { label: "Up To 20 Items", desc: "Small cafe or counter" },
@@ -324,8 +339,8 @@ export default function Onboard() {
                   {/* STEP 5: Plan Choice */}
                   {currentStep === 5 && (
                     <div className="step-screen">
-                      <h2 className="step-question font-display">CHOOSE YOUR SUBSCRIPTION</h2>
-                      <p className="step-hint font-body">Both plans include menu digitization and zero order commissions.</p>
+                      <h2 className="step-question font-display text-center">CHOOSE YOUR SUBSCRIPTION</h2>
+                      <p className="step-hint font-body text-center">Both plans include menu digitization and zero order commissions.</p>
                       <div className="tap-options-grid font-mono">
                         {[
                           {
@@ -365,8 +380,8 @@ export default function Onboard() {
                   {/* STEP 6: Notes & Final Submit */}
                   {currentStep === 6 && (
                     <div className="step-screen">
-                      <h2 className="step-question font-display">ANY SPECIAL REQUIREMENTS?</h2>
-                      <p className="step-hint font-body">Optional: Tell us about your current kitchen setup, counter hours, or target launch date.</p>
+                      <h2 className="step-question font-display text-center">ANY SPECIAL REQUIREMENTS?</h2>
+                      <p className="step-hint font-body text-center">Optional: Tell us about your current kitchen setup, counter hours, or target launch date.</p>
                       <div className="flow-field-group">
                         <textarea
                           rows={4}
@@ -377,7 +392,7 @@ export default function Onboard() {
                         />
                       </div>
 
-                      <div className="privacy-note-card font-mono">
+                      <div className="privacy-note-card font-mono text-center">
                         <strong>DATA PRIVACY:</strong> Your contact details and menu specifications are kept strictly private between you and Ordera. Zero sharing.
                       </div>
 
@@ -394,7 +409,7 @@ export default function Onboard() {
                 </div>
               ) : (
                 /* SUCCESS SCREEN */
-                <div className="onboard-success-screen">
+                <div className="onboard-success-screen text-center">
                   <div className="success-badge font-mono">✓ REQUEST RECORDED</div>
                   <h2 className="success-title font-display">
                     WE ARE READY TO CONFIGURE YOUR DESK
@@ -403,13 +418,13 @@ export default function Onboard() {
                     Thank you, {formData.ownerName}. Your setup intake for <strong>{formData.businessName}</strong> ({formData.planInterest} Plan) is logged. Our Colombo team will contact you within 24 hours.
                   </p>
 
-                  <div className="success-actions font-mono" style={{ width: "100%" }}>
+                  <div className="success-actions font-mono" style={{ width: "100%", marginTop: "24px" }}>
                     <a
                       href={buildWhatsAppSummary()}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="chamfer-btn chamfer-btn-primary full-width"
-                      style={{ textAlign: "center" }}
+                      style={{ textAlign: "center", display: "inline-flex", justifyContent: "center" }}
                     >
                       SEND SUMMARY ON WHATSAPP NOW →
                     </a>

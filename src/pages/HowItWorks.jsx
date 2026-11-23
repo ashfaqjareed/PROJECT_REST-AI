@@ -1,67 +1,70 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { siteConfig } from "../data/site";
 import { features } from "../data/features";
 import { generalFaq } from "../data/faq";
 import { useHead } from "../hooks/useHead";
-import { ChamferButton } from "../components/ChamferButton";
-import { OpposingTextRails } from "../components/OpposingTextRails";
-import { SplitFlapText } from "../components/SplitFlapText";
 import {
   KitchenBellScene,
   PinKeypadScene,
   PersonPhoneScene,
   QueueCounterScene
 } from "../components/SvgScenes";
-import { ChevronDownIcon } from "../components/Icons";
+import { ChevronDownIcon, PhoneIcon, WhatsAppIcon } from "../components/Icons";
 
 const CHAT_STAGES = [
   {
     step: "01",
-    title: "Welcome & Action List",
+    title: "Welcome & Menu Categories",
+    desc: "Customer scans table QR or messages your WhatsApp number to open the visual food catalog.",
     messages: [
-      { sender: "bot", text: "Welcome Back, Nimal" },
-      { sender: "bot", isButton: true, text: "Select An Option ▼" },
-      { sender: "user", text: "Order Food" }
-    ]
-  },
-  {
-    step: "02",
-    title: "Browse Categories",
-    messages: [
-      { sender: "bot", text: "Select A Menu Category" },
+      { sender: "bot", text: "Welcome to Cafe Ceylon" },
       { sender: "bot", isButton: true, text: "Browse Categories ▼" },
       { sender: "user", text: "Main Course" }
     ]
   },
   {
-    step: "03",
-    title: "Select Dish & Quantity",
+    step: "02",
+    title: "Select Dish & Addons",
+    desc: "Customer selects their dish, portion size, and spice or milk preferences in clean taps.",
     messages: [
-      { sender: "bot", text: "Main Course items loaded. Tap to choose." },
-      { sender: "user", text: "Chicken Kottu (Rs. 950)" }
+      { sender: "bot", text: "Main Course: Tap to choose" },
+      { sender: "user", text: "Chicken Kottu (Rs. 950)" },
+      { sender: "bot", text: "Added to cart: 1x Chicken Kottu" }
     ]
   },
   {
-    step: "04",
+    step: "03",
     title: "Review Cart & Confirm",
+    desc: "Total is calculated automatically with zero service charge or hidden app commissions.",
     messages: [
-      { sender: "bot", text: "Added to cart: 1x Chicken Kottu. Total: Rs. 950." },
-      { sender: "bot", isReplies: true, options: ["Add More", "Edit", "Confirm"] },
+      { sender: "bot", text: "Cart Total: Rs. 950. Confirm order?" },
+      { sender: "bot", isReplies: true, options: ["Add More", "Confirm"] },
       { sender: "user", text: "Confirm Order" }
     ]
   },
   {
-    step: "05",
-    title: "Order Received by Counter",
+    step: "04",
+    title: "Manager Receives Ticket",
+    desc: "Manager screen alerts with double chime and sequential order reference OR-1001.",
     messages: [
-      { sender: "bot", text: "Order Received: OR-1001. Preparing your order." }
+      { sender: "bot", text: "Order OR-1001 confirmed. Sent to kitchen." }
+    ]
+  },
+  {
+    step: "05",
+    title: "Cooks Mark Ready",
+    desc: "Cook plates the food and taps Mark Ready on the kitchen tablet screen.",
+    messages: [
+      { sender: "bot", text: "Food is packed and ready for pickup." }
     ]
   },
   {
     step: "06",
-    title: "Ready Notice with 4-Digit PIN",
+    title: "PIN Verification Handover",
+    desc: "Customer shows 4 digit PIN (e.g. 7419) at counter to collect food and pay.",
     messages: [
-      { sender: "bot", text: "Your Order Is Ready. PIN: 7419. Show at counter to collect." }
+      { sender: "bot", text: "Your Pickup PIN: 7419. Show at counter to collect." }
     ]
   }
 ];
@@ -74,55 +77,95 @@ export default function HowItWorks() {
   });
 
   const [openFaq, setOpenFaq] = useState(null);
-  const busyFeatures = features.filter(f => f.status === "live" && ["order-numbers", "maintenance-mode", "block-number"].includes(f.id));
+  const [activeStage, setActiveStage] = useState(0);
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    e.currentTarget.style.setProperty("--mouse-x", `${x}px`);
+    e.currentTarget.style.setProperty("--mouse-y", `${y}px`);
+  };
+
+  const busyFeatures = features.filter(
+    (f) => f.status === "live" && ["order-numbers", "maintenance-mode", "block-number"].includes(f.id)
+  );
 
   return (
-    <div className="how-it-works-wrap">
-      {/* Title Band with Opposing Text Rails */}
-      <section className="sector-title-band">
-        <OpposingTextRails title="HOW IT WORKS" />
-        <div className="container content-layer">
-          <h1 className="how-page-h1 font-display">
-            <SplitFlapText text="ONE ORDER, STEP BY STEP." />
-          </h1>
-          <p className="how-page-sub font-body">
-            Every step is a tap, so orders arrive clean. No typing, no customer errors, no shouting across the kitchen.
-          </p>
+    <div className="how-it-works-brex-page">
+      {/* 1. Hero Header */}
+      <section className="brex-hero-section">
+        <div className="container">
+          <div className="brex-hero-center text-center">
+            <div className="brex-eyebrow-pill font-mono">
+              <span className="eyebrow-dot" aria-hidden="true" />
+              <span>STEP-BY-STEP OPERATION • BUTTON-DRIVEN ORDERING</span>
+            </div>
+
+            <h1 className="brex-hero-h1 font-display">
+              <span className="block-line">EVERY STEP IS A TAP.</span>
+              <span className="block-line">ORDERS ARRIVE CLEAN.</span>
+            </h1>
+
+            <p className="brex-hero-p font-body">
+              No typing mistakes, no noise across crowded dining rooms, and zero wrong pickups. Here is how an order moves from table to counter in under two minutes.
+            </p>
+
+            <div className="brex-hero-actions">
+              <Link to="/onboard" className="brex-btn-primary font-body">
+                Get Started
+              </Link>
+              <Link to="/pricing" className="brex-btn-secondary font-body">
+                View Plans
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* a. Customer Journey: 6 flat chat screens on a staggered diagonal */}
-      <section className="night-section border-top border-bottom">
+      {/* 2. Customer Journey: 6 Tap Screens Grid */}
+      <section className="brex-section border-top border-bottom">
         <div className="container">
-          <div className="section-label-col font-mono">CUSTOMER JOURNEY</div>
-          <h2 className="section-heading font-display">
+          <div className="section-label-pill font-mono text-center">CUSTOMER JOURNEY</div>
+          <h2 className="brex-section-h2 font-display text-center">
             SIX TAP SCREENS ON WHATSAPP
           </h2>
+          <p className="brex-section-desc font-body text-center">
+            Customers tap through menu options naturally in WhatsApp. Zero app to download or update.
+          </p>
 
-          <div className="staggered-chat-screens-grid">
+          <div className="how-chat-screens-grid">
             {CHAT_STAGES.map((stage, idx) => (
-              <div key={stage.step} className={`stagger-chat-col col-${idx % 2 === 0 ? "even" : "odd"}`}>
-                <div className="chat-step-badge font-mono highlight-lime-text">STEP {stage.step}</div>
-                <div className="chat-stage-title font-display">{stage.title}</div>
+              <div
+                key={stage.step}
+                className={`how-chat-col spotlight-card ${activeStage === idx ? "active" : ""}`}
+                onMouseEnter={() => setActiveStage(idx)}
+                onMouseMove={handleMouseMove}
+              >
+                <div className="how-step-badge font-mono">
+                  <span>STEP {stage.step}</span>
+                </div>
+                <h3 className="how-stage-title font-display">{stage.title}</h3>
+                <p className="how-stage-desc font-body">{stage.desc}</p>
 
-                <div className="flat-chat-phone chamfer-card">
-                  <div className="chat-phone-header font-mono">
-                    <span className="phone-indicator" />
-                    <span>Sample Cafe (WhatsApp)</span>
+                <div className="how-chat-mockup">
+                  <div className="mockup-top-status font-mono">
+                    <span className="status-dot green" />
+                    <span>WhatsApp Order Desk</span>
                   </div>
-                  <div className="chat-phone-body">
+                  <div className="mockup-chat-body">
                     {stage.messages.map((m, mIdx) => (
-                      <div key={mIdx} className={`chat-line-row ${m.sender}`}>
+                      <div key={mIdx} className={`mock-chat-row ${m.sender}`}>
                         {m.isButton ? (
-                          <div className="chat-sim-btn font-mono">{m.text}</div>
+                          <div className="chat-btn-ui font-mono">{m.text}</div>
                         ) : m.isReplies ? (
-                          <div className="chat-sim-replies">
+                          <div className="chat-replies-ui font-mono">
                             {m.options.map((opt, oIdx) => (
-                              <span key={oIdx} className="mini-reply-pill font-mono">{opt}</span>
+                              <span key={oIdx} className="reply-pill">{opt}</span>
                             ))}
                           </div>
                         ) : (
-                          <div className={`chat-bubble-night ${m.sender}`}>
+                          <div className={`chat-bubble ${m.sender} font-body`}>
                             {m.text}
                           </div>
                         )}
@@ -136,64 +179,64 @@ export default function HowItWorks() {
         </div>
       </section>
 
-      {/* b. Manager Dashboard Tour */}
-      <section className="night-section border-bottom">
+      {/* 3. Manager Desk Tour */}
+      <section className="brex-section border-bottom">
         <div className="container">
-          <div className="section-label-col font-mono">MANAGER DESK</div>
-          <h2 className="section-heading font-display">
-            THE MANAGER DASHBOARD
+          <div className="section-label-pill font-mono text-center">MANAGER DESK</div>
+          <h2 className="brex-section-h2 font-display text-center">
+            THE MANAGER CONTROL SCREEN
           </h2>
 
-          <div className="dashboard-tour-grid">
-            <div className="tour-info-col">
-              <p className="tour-lead font-body">
-                The manager sees every incoming WhatsApp ticket in real time. One tap accepts the ticket, and one tap sends it straight to the kitchen screen.
+          <div className="how-dual-showcase">
+            <div className="showcase-info-col">
+              <p className="showcase-lead font-body">
+                Incoming tickets appear in clean chronological order. The counter attendant reviews the items and sends the order straight to the kitchen screen in one tap.
               </p>
-              <div className="tour-feature-points font-mono">
-                <div className="tour-point">
-                  <span className="tour-bullet font-mono">01</span>
+              <div className="showcase-points font-mono">
+                <div className="point-item">
+                  <span className="point-num highlight-lime-text">01</span>
                   <div>
-                    <strong>DOUBLE ALERT PULSE:</strong> Instant visual notification on every new ticket.
+                    <strong>DOUBLE ALERT PULSE:</strong> Manager is alerted instantly on every incoming ticket.
                   </div>
                 </div>
-                <div className="tour-point">
-                  <span className="tour-bullet font-mono">02</span>
+                <div className="point-item">
+                  <span className="point-num highlight-lime-text">02</span>
                   <div>
-                    <strong>NUMBER BLOCKING:</strong> Block prank or abusive phone numbers permanently.
+                    <strong>NUMBER BLOCKING:</strong> Abusive or prank numbers blocked permanently in one tap.
                   </div>
                 </div>
-                <div className="tour-point">
-                  <span className="tour-bullet font-mono">03</span>
+                <div className="point-item">
+                  <span className="point-num highlight-lime-text">03</span>
                   <div>
-                    <strong>REVENUE VIEW:</strong> Daily takings and order volume totals without manual spreadsheets.
+                    <strong>DAILY REVENUE VIEW:</strong> Real-time takings totals without manual spreadsheets.
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="tour-ui-col">
-              <div className="mockup-dash-card chamfer-card">
-                <div className="mockup-header font-mono">
-                  <span>DASHBOARD • SAMPLE CAFE</span>
-                  <span className="led-dot pulse-lime" />
+            <div className="showcase-ui-col">
+              <div className="brex-dash-card spotlight-card" onMouseMove={handleMouseMove}>
+                <div className="dash-head font-mono">
+                  <span>COUNTER DESK • SAMPLE CAFE</span>
+                  <span className="live-pill">LIVE SYNC</span>
                 </div>
-                <div className="mockup-ticket chamfer-card">
-                  <div className="mockup-ticket-head font-mono">
-                    <span className="mockup-id">OR-1001</span>
-                    <span className="mockup-status status-active">ACCEPTED</span>
+                <div className="dash-ticket">
+                  <div className="dash-ticket-top font-mono">
+                    <span className="t-id">OR-1001</span>
+                    <span className="t-status">ACCEPTED</span>
                   </div>
-                  <div className="mockup-items font-mono">
+                  <div className="dash-items font-mono">
                     <div>1x Classic Chicken Kottu</div>
                     <div>1x Iced Milo Dinosaur</div>
                   </div>
-                  <div className="mockup-buttons font-mono">
-                    <span className="mockup-btn btn-lime">SEND TO KITCHEN</span>
-                    <span className="mockup-btn btn-outline">BLOCK NUMBER</span>
+                  <div className="dash-actions font-mono">
+                    <span className="btn-tag green">SEND TO COOKS</span>
+                    <span className="btn-tag outline">BLOCK NUMBER</span>
                   </div>
                 </div>
-                <div className="mockup-revenue-strip font-mono">
+                <div className="dash-foot font-mono">
                   <span>TODAY'S ORDERS: 42</span>
-                  <span className="highlight-lime-text">REVENUE: RS. 54,200</span>
+                  <span className="highlight-lime-text">TAKINGS: RS. 54,200</span>
                 </div>
               </div>
             </div>
@@ -201,148 +244,116 @@ export default function HowItWorks() {
         </div>
       </section>
 
-      {/* c. Kitchen View */}
-      <section className="night-section border-bottom">
+      {/* 4. Kitchen Screen & PIN Handover */}
+      <section className="brex-section border-bottom">
         <div className="container">
-          <div className="section-label-col font-mono">KITCHEN PASS</div>
-          <h2 className="section-heading font-display">
-            TICKETS ON THE COOK'S SCREEN
+          <div className="section-label-pill font-mono text-center">KITCHEN SCREEN & PIN</div>
+          <h2 className="brex-section-h2 font-display text-center">
+            NO SHOUTING. NO WRONG PICKUPS.
           </h2>
-          <div className="kitchen-tour-grid">
-            <div className="kitchen-scene-col">
-              <KitchenBellScene />
-            </div>
-            <div className="kitchen-desc-col">
-              <p className="kitchen-desc-text font-body">
-                Cooks see hot tickets lined up in exact order of arrival. When food is plated, one tap marks the order ready, sending the customer their pickup PIN immediately.
-              </p>
-              <div className="kitchen-highlights font-mono">
-                <div>• Pure black screen for steamy, hot kitchen environments</div>
-                <div>• Big high contrast text readable from 3 meters away</div>
-                <div>• Zero messy paper tickets hanging near fryers</div>
+
+          <div className="how-dual-showcase">
+            <div className="showcase-card-tile">
+              <div className="tile-scene">
+                <KitchenBellScene />
               </div>
+              <h3 className="tile-title font-display">TICKETS ON COOK'S SCREEN</h3>
+              <p className="tile-desc font-body">
+                Cooks see hot tickets in exact order of arrival. When food is plated, one tap marks the order ready, sending the customer their pickup PIN immediately.
+              </p>
+              <ul className="tile-list font-mono">
+                <li>• High contrast screen readable from 3 meters away</li>
+                <li>• Mark ready in one tap</li>
+                <li>• No messy paper tickets near hot fryers</li>
+              </ul>
+            </div>
+
+            <div className="showcase-card-tile">
+              <div className="tile-scene">
+                <PinKeypadScene />
+              </div>
+              <h3 className="tile-title font-display">4-DIGIT PICKUP PIN</h3>
+              <p className="tile-desc font-body">
+                The customer holds the 4-digit PIN on WhatsApp. The manager never sees it until the customer shows it at collection, preventing any order mix-up.
+              </p>
+              <ul className="tile-list font-mono">
+                <li>• Random 4-digit PIN generated per ticket</li>
+                <li>• Manager enters PIN to verify handover</li>
+                <li>• Cash or LankaQR payment settled cleanly</li>
+              </ul>
             </div>
           </div>
         </div>
       </section>
 
-      {/* d. PIN Handover Diagram */}
-      <section className="night-section border-bottom">
+      {/* 5. Busy Hour Tools */}
+      <section className="brex-section border-bottom">
         <div className="container">
-          <div className="section-label-col font-mono">PIN HANDOVER</div>
-          <h2 className="section-heading font-display">
-            WHY THE 4-DIGIT PIN MATTERS
+          <div className="section-label-pill font-mono text-center">RUSH TOOLS</div>
+          <h2 className="brex-section-h2 font-display text-center">
+            BUILT FOR PEAK HOUR RUSHES
           </h2>
 
-          <div className="pin-diagram-grid">
-            <div className="pin-explanation-col">
-              <p className="pin-bold-line font-display">
-                NO WRONG PICKUPS. NO ARGUMENTS AT A BUSY COUNTER.
-              </p>
-              <p className="pin-sub-text font-body">
-                The customer holds the PIN on their phone. The manager never sees it until the customer shows it at the counter. The manager enters it into the dashboard to close the ticket and hand over the meal.
-              </p>
-              <div className="pin-rule-callout font-mono">
-                Customer verifies meal → Manager types PIN → Food handed over → Cash or card paid
-              </div>
-            </div>
-
-            <div className="pin-scene-col">
-              <PinKeypadScene />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* e. Busy Hour Features */}
-      <section className="night-section border-bottom">
-        <div className="container">
-          <div className="section-label-col font-mono">RUSH HOURS</div>
-          <h2 className="section-heading font-display">
-            BUILT FOR BUSY HOURS
-          </h2>
-
-          <div className="busy-hour-cards-grid">
+          <div className="brex-bento-grid">
             {busyFeatures.map((f) => (
-              <div key={f.id} className="busy-feature-card chamfer-card">
-                <div className="busy-card-badge font-mono">PEAK TOOL</div>
-                <h3 className="busy-card-title font-display">{f.title}</h3>
-                <p className="busy-card-desc font-body">{f.description}</p>
+              <div key={f.id} className="brex-bento-tile">
+                <div className="bento-badge-live font-mono">PEAK TOOL</div>
+                <h3 className="bento-heading font-display">{f.title}</h3>
+                <p className="bento-text font-body">{f.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* f. Setup Timeline & Requirements */}
-      <section className="night-section border-bottom">
+      {/* 6. Setup Timeline */}
+      <section className="brex-section border-bottom">
         <div className="container">
-          <div className="section-label-col font-mono">SETUP TIMELINE</div>
-          <h2 className="section-heading font-display">
-            WHAT WE SET UP & WHAT WE NEED FROM YOU
+          <div className="section-label-pill font-mono text-center">SETUP TIMELINE</div>
+          <h2 className="brex-section-h2 font-display text-center">
+            READY IN 2 WORKING DAYS
           </h2>
 
-          <div className="setup-dual-grid">
-            {/* Timeline */}
-            <div className="setup-timeline-col">
-              <h3 className="setup-sub-heading font-display">SETUP TIMELINE</h3>
-              <div className="setup-steps-line font-mono">
-                {[
-                  { step: "01", title: "FIRST TALK", desc: "WhatsApp discussion on menu size and counter layout." },
-                  { step: "02", title: "MENU ENTRY", desc: "We enter items and prices from your photos or PDFs." },
-                  { step: "03", title: "NUMBER SETUP", desc: "Link your WhatsApp ordering desk number." },
-                  { step: "04", title: "TEST ORDERS", desc: "Run simulated tickets with your shift team." },
-                  { step: "05", title: "GO LIVE", desc: "Place counter QR posters and start receiving orders." }
-                ].map((s) => (
-                  <div key={s.step} className="timeline-node">
-                    <span className="timeline-node-num highlight-lime-text">{s.step}</span>
-                    <div className="timeline-node-body">
-                      <strong>{s.title}:</strong> {s.desc}
-                    </div>
-                  </div>
-                ))}
+          <div className="how-timeline-cards-grid font-mono">
+            {[
+              { step: "01", title: "First Talk", days: "Day 1", desc: "WhatsApp discussion on menu layout and counter setup." },
+              { step: "02", title: "Menu Entry", days: "Day 1", desc: "We enter your dishes, prices, and photos for you." },
+              { step: "03", title: "Number Linking", days: "Day 2", desc: "Connect your official WhatsApp ordering desk." },
+              { step: "04", title: "Staff Walkthrough", days: "Day 2", desc: "Run test tickets together on phone or tablet." },
+              { step: "05", title: "Go Live", days: "Day 2", desc: "Display your QR posters and accept clean orders." }
+            ].map((node) => (
+              <div key={node.step} className="timeline-card">
+                <span className="t-node-num highlight-lime-text">{node.step}</span>
+                <div className="t-node-title">{node.title} ({node.days})</div>
+                <p className="t-node-desc font-body">{node.desc}</p>
               </div>
-              {/* FOUNDER TO CONFIRM: setup days */}
-              <div className="setup-commitment-tag font-mono">
-                Ready in {siteConfig.setupWorkingDays} working days.
-              </div>
-            </div>
-
-            {/* What we need from you */}
-            <div className="setup-needs-col">
-              <h3 className="setup-sub-heading font-display">WHAT WE NEED FROM YOU</h3>
-              <div className="needs-card chamfer-card font-mono">
-                <div className="need-item">✓ A WhatsApp number for the restaurant counter</div>
-                <div className="need-item">✓ Your menu with current prices (photos or text)</div>
-                <div className="need-item">✓ A tablet, smartphone, or laptop for the dashboard</div>
-                <div className="need-item">✓ Counter staff member assigned as manager login</div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* g. FAQ Accordion */}
-      <section className="night-section border-bottom">
+      {/* 7. FAQ */}
+      <section className="brex-section border-bottom">
         <div className="container">
-          <div className="section-label-col font-mono">QUESTIONS</div>
-          <h2 className="section-heading font-display">
+          <div className="section-label-pill font-mono text-center">QUESTIONS</div>
+          <h2 className="brex-section-h2 font-display text-center">
             HOW IT WORKS FAQ
           </h2>
-          <div className="faq-accordions-group">
+
+          <div className="brex-faq-accordion">
             {generalFaq.map((item, idx) => (
-              <div key={idx} className="faq-night-row">
+              <div key={idx} className="faq-item-row">
                 <button
                   type="button"
-                  className="faq-toggle-btn"
+                  className="faq-question-btn"
                   onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
                   aria-expanded={openFaq === idx}
                 >
-                  <span className="faq-q-text">{item.question}</span>
-                  <ChevronDownIcon size={18} className={`faq-chevron ${openFaq === idx ? "open" : ""}`} />
+                  <span className="faq-q-title">{item.question}</span>
+                  <ChevronDownIcon size={18} className={`faq-arrow ${openFaq === idx ? "open" : ""}`} />
                 </button>
                 {openFaq === idx && (
-                  <div className="faq-answer-block">
+                  <div className="faq-answer-content font-body">
                     <p>{item.answer}</p>
                   </div>
                 )}
@@ -352,19 +363,22 @@ export default function HowItWorks() {
         </div>
       </section>
 
-      {/* h. CTA Band */}
-      <section className="night-section sector-cta-section">
+      {/* 8. CTA Section */}
+      <section className="brex-section brex-contact-cta text-center">
         <div className="container">
-          <h2 className="cta-big-title font-display">
-            READY TO GET STARTED WITH ORDERA?
+          <h2 className="brex-cta-title font-display">
+            READY TO SET UP YOUR RESTAURANT DESK?
           </h2>
-          <div className="sector-cta-buttons">
-            <ChamferButton to="/onboard" variant="primary">
+          <p className="brex-cta-sub font-body">
+            Join Sri Lankan restaurants and cafes cutting counter lines with Ordera.
+          </p>
+          <div className="brex-hero-actions">
+            <Link to="/onboard" className="brex-btn-primary font-body">
               Start Onboarding
-            </ChamferButton>
-            <ChamferButton href={siteConfig.whatsappLink} variant="secondary">
+            </Link>
+            <a href={siteConfig.whatsappLink} target="_blank" rel="noopener noreferrer" className="brex-btn-secondary font-body">
               WhatsApp Us
-            </ChamferButton>
+            </a>
           </div>
         </div>
       </section>

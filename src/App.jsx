@@ -1,11 +1,11 @@
-import React, { lazy, Suspense, useState, useEffect } from "react";
+import React, { lazy, Suspense } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Navigation } from "./components/Navigation";
 import { Footer } from "./components/Footer";
 import { PageTransition } from "./components/PageTransition";
-import { CustomCursor } from "./components/CustomCursor";
 import { OrderaAssistant } from "./components/OrderaAssistant";
 import { useSmoothScroll } from "./hooks/useSmoothScroll";
+import { useTheme } from "./hooks/useTheme";
 import { siteConfig } from "./data/site";
 import { WhatsAppIcon } from "./components/Icons";
 
@@ -16,35 +16,20 @@ const Onboard = lazy(() => import("./pages/Onboard"));
 const SectorPage = lazy(() => import("./pages/SectorPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
-function ScrollTraceLine() {
-  const [progress, setProgress] = useState(0);
+function ScrollToTop() {
+  const { pathname } = useLocation();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const total = document.documentElement.scrollHeight - window.innerHeight;
-      if (total > 0) {
-        setProgress(Math.min(100, Math.max(0, (window.scrollY / total) * 100)));
-      }
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, [pathname]);
 
-  return (
-    <div className="page-scroll-tracer" aria-hidden="true">
-      <div className="tracer-track">
-        <div className="tracer-fill" style={{ height: `${progress}%` }}>
-          <div className="tracer-head" />
-        </div>
-      </div>
-    </div>
-  );
+  return null;
 }
 
 function FloatingWAButton() {
   const location = useLocation();
-  // Hide on onboard page
   if (location.pathname === "/onboard") return null;
+
   return (
     <a
       href={siteConfig.whatsappLink}
@@ -61,16 +46,16 @@ function FloatingWAButton() {
 
 export default function App() {
   useSmoothScroll();
+  useTheme(); // Initializes theme attribute on <html>
 
   return (
     <div className="app-root">
+      <ScrollToTop />
       <a href="#main-content" className="skip-link font-mono">
         SKIP TO CONTENT
       </a>
-      <CustomCursor />
       <PageTransition />
       <Navigation />
-      <ScrollTraceLine />
 
       <div className="page-shell">
         <main id="main-content" tabIndex={-1}>

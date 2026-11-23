@@ -16,6 +16,15 @@ export const siteConfig = {
   // Setup turnaround in working days
   setupWorkingDays: 2, // FOUNDER TO CONFIRM: target working days required for complete configuration
 
+  // Onboarding steps breakdown
+  onboardingSteps: [
+    { step: "01", title: "First Talk", days: "Day 1", description: "WhatsApp discussion on menu layout and counter setup." },
+    { step: "02", title: "Menu Entry", days: "Day 1", description: "We enter your dishes, prices, and photos for you." },
+    { step: "03", title: "Number Linking", days: "Day 2", description: "Connect your official WhatsApp ordering desk." },
+    { step: "04", title: "Staff Walkthrough", days: "Day 2", description: "Run test tickets together on phone or tablet." },
+    { step: "05", title: "Go Live", days: "Day 2", description: "Display your QR posters and accept clean orders." }
+  ],
+
   // Observed canteen queue comparison (in minutes)
   // One university canteen break, observed. Times are illustrative.
   queueComparison: {

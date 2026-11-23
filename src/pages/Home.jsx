@@ -6,12 +6,11 @@ import { pricingPlans, enterprisePlan } from "../data/pricing";
 import { sectors } from "../data/sectors";
 import { generalFaq } from "../data/faq";
 import { useHead } from "../hooks/useHead";
-import { ChamferButton } from "../components/ChamferButton";
-import { SplitFlapText } from "../components/SplitFlapText";
+import { BrexFeatureDeck } from "../components/BrexFeatureDeck";
+import { ScrollWordReveal } from "../components/ScrollWordReveal";
 import { OrderBoard } from "../components/OrderBoard";
 import { VelocityTicker } from "../components/VelocityTicker";
 import { OrderSimulator } from "../components/OrderSimulator";
-import { WordScrub } from "../components/WordScrub";
 import { SavingsEstimator } from "../components/SavingsEstimator";
 import {
   QueueCounterScene,
@@ -25,20 +24,10 @@ import {
   FlowerSectorScene,
   BoutiqueSectorScene
 } from "../components/SvgScenes";
-import { ChevronDownIcon, PhoneIcon, WhatsAppIcon, FoodIcon } from "../components/Icons";
-
-const SIX_MOVES = [
-  { step: "01", title: "CUSTOMER TAP", desc: "Customer messages your restaurant WhatsApp number and taps through the visual menu categories.", scene: PersonPhoneScene },
-  { step: "02", title: "ORDER LANDS", desc: "Order arrives instantly on the manager dashboard with a double alert pulse and sequential reference.", scene: QueueCounterScene },
-  { step: "03", title: "MANAGER ACCEPTS", desc: "Manager reviews the items, taps Accept, and dispatches the ticket directly to the kitchen display.", scene: KitchenBellScene },
-  { step: "04", title: "KITCHEN COOKS", desc: "Kitchen staff see live order tickets in clear sequence, prepare the dishes, and tap Mark Ready.", scene: KitchenBellScene },
-  { step: "05", title: "READY MESSAGE", desc: "WhatsApp sends customer their pickup PIN, informing them food is packed and ready for collection.", scene: PersonPhoneScene },
-  { step: "06", title: "PIN HANDOVER", desc: "Manager enters the 4 digit PIN to verify the customer, take payment, and complete the order.", scene: PinKeypadScene }
-];
+import { ChevronDownIcon, PhoneIcon, WhatsAppIcon } from "../components/Icons";
 
 const SECTOR_ICONS = {
-  add .
-    restaurants: RestaurantSectorScene,
+  restaurants: RestaurantSectorScene,
   cafes: CafeSectorScene,
   canteens: CanteenSectorScene,
   bakeries: BakerySectorScene,
@@ -48,272 +37,182 @@ const SECTOR_ICONS = {
 
 export default function Home() {
   useHead({
-    title: "Order from Your Seat | Ordera",
+    title: "Ordera | WhatsApp Ordering for Sri Lankan Restaurants",
     description: siteConfig.description,
     path: "/"
   });
 
   const navigate = useNavigate();
-  const [demoTab, setDemoTab] = useState("watch"); // "watch" or "try"
-  const [activeMove, setActiveMove] = useState(0);
+  const [demoTab, setDemoTab] = useState("watch");
   const [openFaq, setOpenFaq] = useState(null);
-  const [hoveredSlab, setHoveredSlab] = useState(null);
   const [revealedPhone, setRevealedPhone] = useState(false);
-  const [threeSeatsActive, setThreeSeatsActive] = useState(0);
 
-  const liveFeatures = features.filter(f => f.status === "live").slice(0, 6);
+  const liveFeatures = features.filter((f) => f.status === "live").slice(0, 6);
+
+  // Mouse spotlight tracker for proximity glow on cards
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    e.currentTarget.style.setProperty("--mouse-x", `${x}px`);
+    e.currentTarget.style.setProperty("--mouse-y", `${y}px`);
+  };
 
   return (
-    <div className="home-page-wrap">
-      {/* 1. HERO SECTION */}
-      <section className="night-hero-section">
+    <div className="home-brex-wrap">
+      {/* 1. HERO SECTION: Refero / Brex SaaS Hero */}
+      <section className="brex-hero-section">
         <div className="container">
-          <div className="hero-two-col-layout">
-            {/* Left Column: Headlines, Subtext, Buttons, Order Board */}
-            <div className="hero-text-col">
-              <div className="hero-split-flap-headline font-display">
-                <SplitFlapText text="ORDER FROM YOUR SEAT." className="headline-row" delay={0} />
-                <div className="headline-row">
-                  <SplitFlapText text="WALK IN WHEN IT IS " delay={300} />
-                  <span className="solid-lime-chip">READY.</span>
-                </div>
-              </div>
-
-              <p className="hero-subtext">
-                Ordera turns WhatsApp into your restaurant's order desk. Customers tap their order, your kitchen sees it, and the food is handed over with a 4 digit PIN. No app to install. No commission on orders.
-              </p>
-
-              <div className="hero-action-buttons">
-                <ChamferButton to="/onboard" variant="primary">
-                  Get Started
-                </ChamferButton>
-                <ChamferButton
-                  variant="secondary"
-                  href="#demo-panel"
-                >
-                  Watch An Order
-                </ChamferButton>
-              </div>
-
-              {/* Sample Order Board strip in Hero */}
-              <div className="hero-order-board">
-                <OrderBoard compact={true} />
-              </div>
+          <div className="brex-hero-center text-center">
+            {/* Announcement Pill */}
+            <div className="brex-eyebrow-pill font-mono">
+              <span className="eyebrow-dot" aria-hidden="true" />
+              <span>COLOMBO RESTAURANT TECH • ZERO ORDER COMMISSION</span>
             </div>
 
-            {/* Right Column: Demo Panel (Watch / Try It) */}
-            <div id="demo-panel" className="hero-demo-col">
-              <div className="demo-panel-card chamfer-card">
-                <div className="demo-tab-switcher font-mono">
-                  <button
-                    type="button"
-                    className={`demo-tab-btn ${demoTab === "watch" ? "active" : ""}`}
-                    onClick={() => setDemoTab("watch")}
-                  >
-                    WATCH IT PLAY
-                  </button>
-                  <button
-                    type="button"
-                    className={`demo-tab-btn ${demoTab === "try" ? "active" : ""}`}
-                    onClick={() => setDemoTab("try")}
-                  >
-                    TRY IT YOURSELF
-                  </button>
-                </div>
+            {/* Main Punchy Headline */}
+            <h1 className="brex-hero-h1 font-display">
+              <span className="block-line">The order desk</span>
+              <span className="block-line">is just the start.</span>
+            </h1>
 
-                <div className="demo-panel-content">
-                  <OrderSimulator defaultMode={demoTab === "watch" ? "watch" : "manual"} />
-                </div>
-              </div>
+            {/* Subtext */}
+            <p className="brex-hero-p font-body">
+              Ordera turns WhatsApp into your restaurant's order desk. Customers tap their food order from their seat, your kitchen sees tickets instantly, and meals are handed over with a 4-digit PIN.
+            </p>
+
+            {/* Call to Actions */}
+            <div className="brex-hero-actions">
+              <Link to="/onboard" className="brex-btn-primary font-body">
+                Get Started
+              </Link>
+              <Link to="/pricing" className="brex-btn-secondary font-body">
+                View Pricing
+              </Link>
+            </div>
+
+            {/* Micro proof badges */}
+            <div className="brex-hero-meta font-mono">
+              <span>No App Download</span>
+              <span>•</span>
+              <span>Keep 100% Revenue</span>
+              <span>•</span>
+              <span>Ready in 2 Days</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. VELOCITY TICKER (Home phrase set) */}
-      <VelocityTicker phrases={siteConfig.tickerPhrases.home} />
-
-      {/* 3. THE WAIT: Scrubbed queue comparison */}
-      <section className="night-section border-bottom">
+      {/* 2. REFERO / BREX 5-CARD FEATURE SHOWCASE */}
+      <section className="brex-deck-section">
         <div className="container">
-          <div className="section-label-col font-mono">THE WAIT</div>
-          <h2 className="section-heading font-display">
+          <BrexFeatureDeck />
+        </div>
+      </section>
+
+      {/* 3. SCROLL EFFECT: Scroll-driven Word Reveal */}
+      <ScrollWordReveal
+        subhead="THE MANIFESTO"
+        text="Your customers already live on WhatsApp. So the order desk should too. No app to download. No account to make. Every step is a tap, so orders arrive clean. While the city waits in line, your kitchen is already cooking."
+      />
+
+      {/* 4. INTERACTIVE LIVE SIMULATOR */}
+      <section className="brex-section border-top border-bottom">
+        <div className="container">
+          <div className="section-label-pill font-mono text-center">
+            INTERACTIVE EXPERIENCE
+          </div>
+          <h2 className="brex-section-h2 font-display text-center">
+            SEE HOW ONE TAP FLOWS THROUGH YOUR VENUE
+          </h2>
+          <p className="brex-section-desc font-body text-center">
+            Watch the complete customer-to-kitchen order cycle in action, or test ordering directly.
+          </p>
+
+          <div className="brex-simulator-wrapper">
+            <div className="simulator-tab-bar font-mono">
+              <button
+                type="button"
+                className={`sim-tab-item ${demoTab === "watch" ? "active" : ""}`}
+                onClick={() => setDemoTab("watch")}
+              >
+                WATCH ORDER CYCLE
+              </button>
+              <button
+                type="button"
+                className={`sim-tab-item ${demoTab === "try" ? "active" : ""}`}
+                onClick={() => setDemoTab("try")}
+              >
+                TRY IT YOURSELF
+              </button>
+            </div>
+
+            <div className="simulator-canvas">
+              <OrderSimulator defaultMode={demoTab === "watch" ? "watch" : "manual"} />
+            </div>
+
+            <div className="simulator-board-footer">
+              <OrderBoard compact={true} />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. THE WAIT: Observed Canteen Comparison */}
+      <section className="brex-section border-bottom">
+        <div className="container">
+          <div className="section-label-pill font-mono text-center">THE WAIT</div>
+          <h2 className="brex-section-h2 font-display text-center">
             ONE CANTEEN BREAK, OBSERVED
           </h2>
 
-          <div className="the-wait-comparison chamfer-card">
-            {/* Today Bar */}
-            <div className="wait-bar-row">
-              <span className="wait-bar-label font-mono">TODAY</span>
-              <div className="wait-track">
-                <div className="wait-fill-today" style={{ width: "100%" }}>
+          <div className="brex-wait-card spotlight-card" onMouseMove={handleMouseMove}>
+            <div className="wait-compare-row">
+              <span className="wait-row-label font-mono">TODAY WITHOUT ORDERA</span>
+              <div className="wait-track-bar">
+                <div className="wait-bar-fill today" style={{ width: "100%" }}>
                   <span className="font-mono">8m Order Line + 5m Bill Queue + 10m Counter Wait = 23m</span>
                 </div>
               </div>
             </div>
 
-            {/* With Ordera Bar */}
-            <div className="wait-bar-row">
-              <span className="wait-bar-label font-mono highlight-lime-text">WITH ORDERA</span>
-              <div className="wait-track">
-                <div className="wait-fill-ordera" style={{ width: "9%" }}>
+            <div className="wait-compare-row">
+              <span className="wait-row-label font-mono highlight-lime-text">WITH ORDERA</span>
+              <div className="wait-track-bar">
+                <div className="wait-bar-fill ordera" style={{ width: "12%" }}>
                   <span className="font-mono">2m PIN Handover</span>
                 </div>
               </div>
             </div>
 
-            <div className="wait-notes-row">
-              <p className="wait-caption font-mono">
-                {siteConfig.queueComparison.context}
-              </p>
-              <p className="wait-student-quote font-body">
-                {siteConfig.queueComparison.studentNote}
-              </p>
+            <div className="wait-meta-row font-mono">
+              <span>{siteConfig.queueComparison.context}</span>
+              <span className="student-quote font-body">{siteConfig.queueComparison.studentNote}</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. ONE ORDER, SIX MOVES: Sticky Scroll Spy */}
-      <section className="night-section border-bottom">
+      {/* 6. WHO IT FITS: Sector Cards */}
+      <section className="brex-section border-bottom">
         <div className="container">
-          <div className="section-label-col font-mono">WORKFLOW</div>
-          <h2 className="section-heading font-display">
-            ONE ORDER, SIX MOVES
+          <div className="section-label-pill font-mono text-center">SOLUTIONS</div>
+          <h2 className="brex-section-h2 font-display text-center">
+            BUILT FOR BUSY SRI LANKAN VENUES
           </h2>
+          <p className="brex-section-desc font-body text-center">
+            Tailored order flows for restaurants, cafes, university canteens, and bakeries.
+          </p>
 
-          <div className="scroll-spy-layout">
-            {/* Left sticky odometer */}
-            <div className="spy-sticky-odometer">
-              <div className="odometer-num font-display highlight-lime-text">
-                {SIX_MOVES[activeMove].step}
-              </div>
-              <div className="odometer-title font-display">
-                {SIX_MOVES[activeMove].title}
-              </div>
-              <p className="odometer-desc font-body">
-                {SIX_MOVES[activeMove].desc}
-              </p>
-            </div>
-
-            {/* Right mini scenes list */}
-            <div className="spy-scenes-stack">
-              {SIX_MOVES.map((move, idx) => {
-                const Scene = move.scene;
-                return (
-                  <div
-                    key={move.step}
-                    className={`spy-move-block chamfer-card ${activeMove === idx ? "current-move" : ""}`}
-                    onMouseEnter={() => setActiveMove(idx)}
-                  >
-                    <div className="move-header font-mono">
-                      <span className="move-badge">{move.step}</span>
-                      <span className="move-header-title">{move.title}</span>
-                    </div>
-                    <div className="move-scene-display">
-                      <Scene />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 5. MANIFESTO: Word scrub paragraph */}
-      <section className="night-section border-bottom manifesto-section">
-        <div className="container">
-          <div className="section-label-col font-mono">MANIFESTO</div>
-          <WordScrub
-            text="Your customers already live on WhatsApp. So the order desk should too. No app to download. No account to make. Tap, wait, collect."
-            className="manifesto-text font-display"
-          />
-        </div>
-      </section>
-
-      {/* 6. THREE SEATS: Accordion rail */}
-      <section className="night-section border-bottom">
-        <div className="container">
-          <div className="section-label-col font-mono">THREE SEATS</div>
-          <h2 className="section-heading font-display">
-            BUILT FOR EVERYONE IN THE ROOM
-          </h2>
-
-          <div className="three-seats-rail">
-            {/* Seat 1: Customer */}
-            <div
-              className={`seat-strip chamfer-card ${threeSeatsActive === 0 ? "expanded" : ""}`}
-              onMouseEnter={() => setThreeSeatsActive(0)}
-              onClick={() => setThreeSeatsActive(0)}
-            >
-              <div className="seat-title font-display">FOR THE CUSTOMER</div>
-              <div className="seat-content">
-                <PersonPhoneScene />
-                <ul className="seat-points font-mono">
-                  <li>• Zero app to download or update</li>
-                  <li>• Every step is a tap from their seat</li>
-                  <li>• Random 4 digit PIN only they hold</li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Seat 2: Manager */}
-            <div
-              className={`seat-strip chamfer-card ${threeSeatsActive === 1 ? "expanded" : ""}`}
-              onMouseEnter={() => setThreeSeatsActive(1)}
-              onClick={() => setThreeSeatsActive(1)}
-            >
-              <div className="seat-title font-display">FOR THE MANAGER</div>
-              <div className="seat-content">
-                <QueueCounterScene />
-                <ul className="seat-points font-mono">
-                  <li>• Every incoming order in clean sequence</li>
-                  <li>• Accept and dispatch to kitchen in one tap</li>
-                  <li>• Permanent number blocking for abusers</li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Seat 3: Kitchen */}
-            <div
-              className={`seat-strip chamfer-card ${threeSeatsActive === 2 ? "expanded" : ""}`}
-              onMouseEnter={() => setThreeSeatsActive(2)}
-              onClick={() => setThreeSeatsActive(2)}
-            >
-              <div className="seat-title font-display">FOR THE KITCHEN</div>
-              <div className="seat-content">
-                <KitchenBellScene />
-                <ul className="seat-points font-mono">
-                  <li>• High contrast screen displays hot tickets</li>
-                  <li>• Cook marks ready in one tap</li>
-                  <li>• No shouting, paper slips, or lost tickets</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 7. WHO IT FITS: Six tall slabs with GSAP expansion and navigation */}
-      <section className="night-section border-bottom">
-        <div className="container">
-          <div className="section-label-col font-mono">SECTORS</div>
-          <h2 className="section-heading font-display">
-            WHO IT FITS
-          </h2>
-
-          <div className="six-slabs-container">
-            {sectors.map((sec, idx) => {
+          <div className="brex-sectors-grid">
+            {sectors.map((sec) => {
               const Scene = SECTOR_ICONS[sec.slug] || RestaurantSectorScene;
-              const isHovered = hoveredSlab === idx;
               return (
                 <div
                   key={sec.slug}
-                  className={`sector-slab chamfer-card ${isHovered ? "expanded" : ""}`}
-                  onMouseEnter={() => setHoveredSlab(idx)}
-                  onMouseLeave={() => setHoveredSlab(null)}
+                  className="brex-sector-card spotlight-card"
                   onClick={() => navigate(`/for/${sec.slug}`)}
+                  onMouseMove={handleMouseMove}
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
@@ -321,19 +220,15 @@ export default function Home() {
                   }}
                   aria-label={`Explore Ordera for ${sec.name}`}
                 >
-                  <div className="slab-header">
-                    <span className="slab-status-tag font-mono">{sec.status}</span>
-                    <h3 className="slab-name font-display">{sec.name.toUpperCase()}</h3>
+                  <div className="sector-card-header">
+                    <span className="sector-status-tag font-mono">{sec.status}</span>
+                    <h3 className="sector-title font-display">{sec.name}</h3>
                   </div>
-
-                  <div className="slab-body">
-                    <p className="slab-problem font-body">{sec.problems[0]}</p>
-                    <div className="slab-scene-wrap">
-                      <Scene />
-                    </div>
+                  <p className="sector-problem font-body">{sec.problems[0]}</p>
+                  <div className="sector-scene-slot">
+                    <Scene />
                   </div>
-
-                  <div className="slab-footer font-mono">
+                  <div className="sector-card-foot font-mono">
                     <span>EXPLORE SECTOR →</span>
                   </div>
                 </div>
@@ -343,108 +238,139 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 8. WHY TRUST IT: Bento Grid from features.js (status: "live") */}
-      <section className="night-section border-bottom">
+      {/* 7. VERIFIED FEATURES BENTO GRID */}
+      <section className="brex-section border-bottom">
         <div className="container">
-          <div className="section-label-col font-mono">VERIFIED FEATURES</div>
-          <h2 className="section-heading font-display">
-            WHY TRUST IT
+          <div className="section-label-pill font-mono text-center">PROVEN CAPABILITIES</div>
+          <h2 className="brex-section-h2 font-display text-center">
+            WHY KITCHENS RELY ON ORDERA
           </h2>
 
-          <div className="bento-features-grid">
+          <div className="brex-bento-grid">
             {liveFeatures.map((feat, i) => (
-              <div key={feat.id} className={`bento-block chamfer-card bento-${i}`}>
-                <div className="bento-badge font-mono">LIVE FEATURE</div>
-                <h3 className="bento-title font-display">{feat.title}</h3>
-                <p className="bento-desc font-body">{feat.description}</p>
-                <div className="bento-indicator">
-                  <span className="led-square led-lime" aria-hidden="true" />
-                  <span className="font-mono">VERIFIED LIVE</span>
-                </div>
+              <div
+                key={feat.id}
+                className={`brex-bento-tile tile-${i} spotlight-card`}
+                onMouseMove={handleMouseMove}
+              >
+                <div className="bento-badge-live font-mono">LIVE IN PRODUCTION</div>
+                <h3 className="bento-heading font-display">{feat.title}</h3>
+                <p className="bento-text font-body">{feat.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 9. PLANS AT A GLANCE + SAVINGS ESTIMATOR */}
-      <section className="night-section border-bottom">
+      {/* 8. PLANS AT A GLANCE (Starter Rs. 3,500/mo & Growth Rs. 8,000/mo) */}
+      <section className="brex-section border-bottom">
         <div className="container">
-          <div className="section-label-col font-mono">PLANS</div>
-          <h2 className="section-heading font-display">
-            PLANS AT A GLANCE
+          <div className="section-label-pill font-mono text-center">PRICING</div>
+          <h2 className="brex-section-h2 font-display text-center">
+            TRANSPARENT, FLAT SUBSCRIPTION PLANS
           </h2>
+          <p className="brex-section-desc font-body text-center">
+            Zero percent food order commissions. Setup once, pay month-to-month.
+          </p>
 
-          <div className="plans-summary-grid">
-            {pricingPlans.map((p) => (
-              <div key={p.id} className={`plan-glance-card chamfer-card ${p.highlight ? "highlight-plan" : ""}`}>
-                <div className="plan-glance-name font-display">{p.name}</div>
-                <div className="plan-glance-target font-body">{p.target}</div>
-                <div className="plan-glance-price font-display highlight-lime-text">
-                  {p.monthlyFee} <span className="period font-mono">{p.period}</span>
+          <div className="brex-pricing-deck">
+            {pricingPlans.map((plan) => {
+              const isGrowth = plan.id === "growth";
+              return (
+                <div
+                  key={plan.id}
+                  className={`brex-pricing-card spotlight-card ${isGrowth ? "highlighted" : ""}`}
+                  onMouseMove={handleMouseMove}
+                >
+                  {isGrowth && (
+                    <div className="pricing-badge font-mono">MOST POPULAR</div>
+                  )}
+                  <h3 className="pricing-name font-display">{plan.name}</h3>
+                  <p className="pricing-sub font-body">{plan.target}</p>
+
+                  <div className="pricing-number font-display">
+                    {plan.monthlyFee}
+                    <span className="pricing-freq font-mono"> / month</span>
+                  </div>
+                  <div className="pricing-setup font-mono">Setup fee: {plan.setupFee} once</div>
+
+                  <ul className="pricing-limits-list font-mono">
+                    <li>• {plan.limits.branches}</li>
+                    <li>• {plan.limits.menuItems}</li>
+                    <li>• {plan.limits.staffLogins}</li>
+                  </ul>
+
+                  <Link
+                    to={`/onboard?plan=${plan.id}`}
+                    className={`pricing-action-btn font-body ${isGrowth ? "btn-solid" : "btn-outline"}`}
+                  >
+                    {plan.ctaText}
+                  </Link>
                 </div>
-                <div className="plan-glance-setup font-mono">Setup: {p.setupFee} once</div>
-                <ul className="plan-glance-limits font-mono">
-                  <li>• {p.limits.branches}</li>
-                  <li>• {p.limits.menuItems}</li>
-                  <li>• {p.limits.staffLogins}</li>
-                </ul>
-                <ChamferButton to="/pricing" variant={p.highlight ? "primary" : "secondary"}>
-                  View Details
-                </ChamferButton>
-              </div>
-            ))}
+              );
+            })}
 
-            {/* Enterprise Coming 2027 Block */}
-            <div className="plan-glance-card chamfer-card enterprise-card">
-              <div className="plan-glance-name font-display">{enterprisePlan.name}</div>
-              <span className="status-tag-ember font-mono">{enterprisePlan.statusTag}</span>
-              <p className="plan-glance-target font-body">{enterprisePlan.target}</p>
-              <ul className="plan-glance-limits font-mono">
+            {/* Enterprise Card */}
+            <div
+              className="brex-pricing-card enterprise spotlight-card"
+              onMouseMove={handleMouseMove}
+            >
+              <div className="pricing-badge font-mono" style={{ background: "var(--ember)", color: "#fff" }}>
+                {enterprisePlan.statusTag}
+              </div>
+              <h3 className="pricing-name font-display">{enterprisePlan.name}</h3>
+              <p className="pricing-sub font-body">{enterprisePlan.target}</p>
+
+              <div className="pricing-number font-display" style={{ fontSize: "28px" }}>
+                Custom Quote
+              </div>
+              <div className="pricing-setup font-mono">Multi-outlet franchises</div>
+
+              <ul className="pricing-limits-list font-mono">
                 {enterprisePlan.plannedFeatures.map((f, idx) => (
-                  <li key={idx}>• {f.title} <span className="tag-planned">[Planned]</span></li>
+                  <li key={idx}>• {f.title}</li>
                 ))}
               </ul>
+
               <a
                 href={`https://wa.me/94768325949?text=${encodeURIComponent(enterprisePlan.whatsappMessage)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="chamfer-btn chamfer-btn-secondary font-mono"
+                className="pricing-action-btn btn-outline font-body"
               >
-                Tell Us You Want It
+                Inquire For Chains
               </a>
             </div>
           </div>
 
-          {/* Compact Savings Estimator */}
-          <div style={{ marginTop: "3rem" }}>
+          <div style={{ marginTop: "40px" }}>
             <SavingsEstimator />
           </div>
         </div>
       </section>
 
-      {/* 10. QUESTIONS: FAQ + Assistant trigger */}
-      <section className="night-section border-bottom">
+      {/* 9. QUESTIONS & HOTLINE */}
+      <section className="brex-section border-bottom">
         <div className="container">
-          <div className="section-label-col font-mono">QUESTIONS</div>
-          <h2 className="section-heading font-display">
-            COMMON QUESTIONS
+          <div className="section-label-pill font-mono text-center">QUESTIONS</div>
+          <h2 className="brex-section-h2 font-display text-center">
+            FREQUENTLY ASKED QUESTIONS
           </h2>
 
-          <div className="faq-accordions-group">
+          <div className="brex-faq-accordion">
             {generalFaq.slice(0, 5).map((item, idx) => (
-              <div key={idx} className="faq-night-row">
+              <div key={idx} className="faq-item-row">
                 <button
                   type="button"
-                  className="faq-toggle-btn"
+                  className="faq-question-btn"
                   onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
                   aria-expanded={openFaq === idx}
                 >
-                  <span className="faq-q-text">{item.question}</span>
-                  <ChevronDownIcon size={18} className={`faq-chevron ${openFaq === idx ? "open" : ""}`} />
+                  <span className="faq-q-title">{item.question}</span>
+                  <ChevronDownIcon size={18} className={`faq-arrow ${openFaq === idx ? "open" : ""}`} />
                 </button>
                 {openFaq === idx && (
-                  <div className="faq-answer-block">
+                  <div className="faq-answer-content font-body">
                     <p>{item.answer}</p>
                   </div>
                 )}
@@ -454,41 +380,38 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 11. CONTACT: Prefer to Talk? */}
-      <section className="night-section">
-        <div className="container">
-          <div className="contact-teaser-box chamfer-card">
-            <div className="contact-teaser-text">
-              <h2 className="contact-title font-display">PREFER TO TALK?</h2>
-              <p className="contact-sub font-body">
-                Call our direct Colombo desk or message us on WhatsApp. We answer in person without automated scripts.
-              </p>
-            </div>
+      {/* 10. DIRECT DESK CONTACT */}
+      <section className="brex-section brex-contact-cta">
+        <div className="container text-center">
+          <h2 className="brex-cta-title font-display">
+            TALK DIRECTLY WITH OUR COLOMBO TEAM
+          </h2>
+          <p className="brex-cta-sub font-body">
+            Have questions about your kitchen setup or menu size? We answer directly without automated bots.
+          </p>
 
-            <div className="contact-reveal-controls">
-              {!revealedPhone ? (
-                <button
-                  type="button"
-                  className="tap-reveal-btn font-mono"
-                  onClick={() => setRevealedPhone(true)}
-                >
-                  Tap to Reveal Hotline
-                </button>
-              ) : (
-                <div className="revealed-phone-row">
-                  <span className="revealed-num font-display">{siteConfig.phoneDisplay}</span>
-                  <a href={siteConfig.telLink} className="contact-action-btn font-mono" aria-label="Call hotline">
-                    <PhoneIcon size={14} /> CALL
+          <div className="brex-cta-reveal-box">
+            {!revealedPhone ? (
+              <button
+                type="button"
+                className="brex-reveal-btn font-mono"
+                onClick={() => setRevealedPhone(true)}
+              >
+                Tap to Reveal Direct Hotline
+              </button>
+            ) : (
+              <div className="brex-revealed-row">
+                <span className="revealed-phone-number font-display">{siteConfig.phoneDisplay}</span>
+                <div className="revealed-actions">
+                  <a href={siteConfig.telLink} className="revealed-btn font-mono">
+                    <PhoneIcon size={14} /> Call Hotline
                   </a>
-                  <a href={siteConfig.whatsappLink} target="_blank" rel="noopener noreferrer" className="contact-action-btn wa font-mono" aria-label="WhatsApp">
-                    <WhatsAppIcon size={14} /> WHATSAPP
+                  <a href={siteConfig.whatsappLink} target="_blank" rel="noopener noreferrer" className="revealed-btn wa font-mono">
+                    <WhatsAppIcon size={14} /> WhatsApp
                   </a>
                 </div>
-              )}
-              <ChamferButton to="/onboard" variant="primary">
-                Get Started
-              </ChamferButton>
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </section>

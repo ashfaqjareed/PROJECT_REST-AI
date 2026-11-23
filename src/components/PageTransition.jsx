@@ -6,14 +6,13 @@ export function PageTransition() {
   const [active, setActive] = useState(false);
 
   useEffect(() => {
-    // Only trigger on route change, not initial mount
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReduced) return;
 
     setActive(true);
     const timer = setTimeout(() => {
       setActive(false);
-    }, 450);
+    }, 420);
 
     return () => clearTimeout(timer);
   }, [location.pathname]);
@@ -27,10 +26,9 @@ export function PageTransition() {
         <div className="wipe-bar bar-2" />
         <div className="wipe-bar bar-3" />
         <div className="wipe-bar bar-4" />
-        <div className="wipe-bar bar-5" />
       </div>
       <div className="transition-logo-badge">
-        <img src="/ordera-logo.png" alt="Ordera" className="transition-logo-img" />
+        <span className="transition-logo-text font-display">ORDERA</span>
       </div>
     </div>
   );

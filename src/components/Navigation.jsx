@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { siteConfig } from "../data/site";
 import { HomeIcon, FlowIcon, TagIcon, TerminalIcon } from "./Icons";
-import { ChamferButton } from "./ChamferButton";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function Navigation() {
   const location = useLocation();
   const [colomboTime, setColomboTime] = useState("");
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   // Live Colombo clock
   useEffect(() => {
@@ -31,112 +31,126 @@ export function Navigation() {
     return () => clearInterval(interval);
   }, []);
 
-  // Scroll progress for desktop left rail line
+  // Header background on scroll
   useEffect(() => {
     const handleScroll = () => {
-      const total = document.documentElement.scrollHeight - window.innerHeight;
-      if (total > 0) {
-        setScrollProgress(Math.min(100, Math.max(0, (window.scrollY / total) * 100)));
-      }
+      setIsScrolled(window.scrollY > 20);
     };
-
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const navLinks = [
-    { to: "/", label: "HOME", icon: HomeIcon },
-    { to: "/how-it-works", label: "HOW", icon: FlowIcon },
-    { to: "/pricing", label: "PRICES", icon: TagIcon },
-    { to: "/onboard", label: "ONBOARD", icon: TerminalIcon }
+    { to: "/", label: "Home" },
+    { to: "/how-it-works", label: "How It Works" },
+    { to: "/pricing", label: "Pricing" },
+    { to: "/onboard", label: "Onboard" }
+  ];
+
+  const sectorLinks = [
+    { to: "/for/restaurants", label: "Restaurants" },
+    { to: "/for/cafes", label: "Cafes" },
+    { to: "/for/canteens", label: "University Canteens" },
+    { to: "/for/bakeries", label: "Bakeries" },
+    { to: "/for/flower-boutiques", label: "Flower Boutiques" },
+    { to: "/for/boutiques", label: "Boutiques" }
   ];
 
   return (
     <>
-      {/* Slim Top Bar */}
-      <header className="night-top-bar" role="banner">
-        <div className="top-bar-inner">
-          {/* Logo on white chamfered chip to ensure high contrast against black */}
-          <Link to="/" className="top-logo-link" aria-label="Ordera Home">
-            <div className="logo-chip">
-              <img src="/ordera-logo.png" alt="Ordera" className="brand-logo-img" />
-            </div>
+      {/* Full-Page Modern Header */}
+      <header className={`full-page-navbar ${isScrolled ? "scrolled" : ""}`} role="banner">
+        <div className="nav-inner-container">
+          {/* Brand Logo as Wordmark in Display Font */}
+          <Link to="/" className="nav-brand-group" aria-label="Ordera Home">
+            <span className="brand-wordmark font-display">ORDERA</span>
+            <span className="brand-accent-dot" aria-hidden="true" />
           </Link>
 
-          {/* Live Colombo Clock */}
-          <div className="colombo-clock-box font-mono" aria-label={`Current Colombo time ${colomboTime}`}>
-            <span className="clock-led-dot" aria-hidden="true" />
-            <span className="clock-city">COLOMBO</span>
-            <span className="clock-time">{colomboTime || "12:00"}</span>
-          </div>
+          {/* Navigation Links */}
+          <nav className="nav-desktop-links" role="navigation">
+            {navLinks.map((item) => {
+              const isActive =
+                item.to === "/"
+                  ? location.pathname === "/"
+                  : location.pathname.startsWith(item.to);
+              return (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className={`nav-link-item ${isActive ? "active" : ""}`}
+                >
+                  {item.label}
+                  {isActive && <span className="nav-active-pill" aria-hidden="true" />}
+                </Link>
+              );
+            })}
 
-          {/* Desktop Right CTA */}
-          <div className="top-bar-cta">
-            <ChamferButton to="/onboard" variant="primary">
+            {/* Sectors Dropdown */}
+            <div className="nav-dropdown-wrapper">
+              <span className="nav-dropdown-trigger">
+                Sectors <span className="dropdown-caret">▾</span>
+              </span>
+              <div className="nav-dropdown-flyout">
+                {sectorLinks.map((sec) => (
+                  <Link key={sec.to} to={sec.to} className="flyout-item font-body">
+                    {sec.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </nav>
+
+          {/* Right Actions: Clock + Theme Switcher + CTA */}
+          <div className="nav-right-actions">
+            <div className="nav-clock-tag font-mono" aria-label={`Current Colombo time ${colomboTime}`}>
+              <span className="clock-pulse-dot" />
+              <span>COLOMBO {colomboTime || "12:00"}</span>
+            </div>
+
+            <ThemeToggle />
+
+            <Link to="/onboard" className="nav-cta-button font-body">
               Get Started
-            </ChamferButton>
+            </Link>
           </div>
         </div>
       </header>
 
-      {/* Desktop Fixed Left Rail (72px wide) */}
-      <aside className="night-left-rail" aria-label="Main Navigation">
-        {/* Scroll progress trace line down the rail */}
-        <div className="rail-scroll-track" aria-hidden="true">
-          <div
-            className="rail-scroll-progress"
-            style={{ height: `${scrollProgress}%` }}
-          />
-        </div>
-
-        <nav className="rail-nav-list" role="navigation">
-          {navLinks.map((item) => {
-            const Icon = item.icon;
-            const isActive =
-              item.to === "/"
-                ? location.pathname === "/"
-                : location.pathname.startsWith(item.to);
-            return (
-              <Link
-                key={item.to}
-                to={item.to}
-                className={`rail-nav-item ${isActive ? "active" : ""}`}
-                aria-current={isActive ? "page" : undefined}
-              >
-                {isActive && <span className="rail-active-square" aria-hidden="true" />}
-                <Icon size={20} className="rail-icon" />
-                <span className="rail-label font-mono">{item.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
-      </aside>
-
-      {/* Mobile & Tablet Fixed Bottom Dock */}
+      {/* Mobile Navigation Dock */}
       <nav className="mobile-bottom-dock" role="navigation" aria-label="Mobile Navigation">
         <div className="bottom-dock-inner">
-          {navLinks.map((item) => {
-            const Icon = item.icon;
-            const isActive =
-              item.to === "/"
-                ? location.pathname === "/"
-                : location.pathname.startsWith(item.to);
-            return (
-              <Link
-                key={item.to}
-                to={item.to}
-                className={`dock-tab ${isActive ? "active" : ""}`}
-                aria-current={isActive ? "page" : undefined}
-              >
-                <Icon size={18} />
-                <span className="dock-label font-mono">{item.label}</span>
-                {isActive && <span className="dock-active-dot" aria-hidden="true" />}
-              </Link>
-            );
-          })}
-          <Link to="/onboard" className="dock-cta-btn font-mono" aria-label="Get Started">
-            <span>START</span>
+          <Link
+            to="/"
+            className={`dock-tab ${location.pathname === "/" ? "active" : ""}`}
+          >
+            <HomeIcon size={18} />
+            <span className="dock-label font-mono">Home</span>
           </Link>
+          <Link
+            to="/how-it-works"
+            className={`dock-tab ${location.pathname.startsWith("/how-it-works") ? "active" : ""}`}
+          >
+            <FlowIcon size={18} />
+            <span className="dock-label font-mono">How</span>
+          </Link>
+          <Link
+            to="/pricing"
+            className={`dock-tab ${location.pathname.startsWith("/pricing") ? "active" : ""}`}
+          >
+            <TagIcon size={18} />
+            <span className="dock-label font-mono">Pricing</span>
+          </Link>
+          <Link
+            to="/onboard"
+            className={`dock-tab ${location.pathname.startsWith("/onboard") ? "active" : ""}`}
+          >
+            <TerminalIcon size={18} />
+            <span className="dock-label font-mono">Onboard</span>
+          </Link>
+          <div className="dock-theme-holder">
+            <ThemeToggle className="dock-theme-toggle" />
+          </div>
         </div>
       </nav>
     </>
